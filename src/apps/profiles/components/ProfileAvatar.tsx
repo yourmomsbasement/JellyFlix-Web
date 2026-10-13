@@ -23,7 +23,8 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%', hideKid
             sx={{
                 position: 'relative',
                 width: size,
-                aspectRatio: '1',
+                // Square without `aspect-ratio`, which older TV browsers lack
+                '&::before': { content: '""', display: 'block', paddingTop: '100%' },
                 borderRadius: '6px',
                 overflow: 'hidden',
                 backgroundColor: profile.AvatarColor,

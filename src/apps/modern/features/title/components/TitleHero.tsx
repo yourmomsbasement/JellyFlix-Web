@@ -38,7 +38,7 @@ interface TitleHeroProps {
     match: number | null | undefined
 }
 
-const getPlayLabel = (target: BaseItemDto | null | undefined) => {
+export const getPlayLabel = (target: BaseItemDto | null | undefined) => {
     if (!target) return globalize.translate('Play');
     const isStarted = (target.UserData?.PlaybackPositionTicks ?? 0) > 0;
     const episode = getEpisodeLabel(target);

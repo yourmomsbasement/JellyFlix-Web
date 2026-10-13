@@ -12,6 +12,7 @@ import { APP_ROUTES as MODERN_APP_ROUTES } from 'apps/modern/routes/routes';
 import { APP_ROUTES as LEGACY_APP_ROUTES } from 'apps/legacy/routes/routes';
 import StartupProfilePicker from 'apps/profiles/components/StartupProfilePicker';
 import { PROFILES_APP_PATH, PROFILES_APP_ROUTES } from 'apps/profiles/routes/routes';
+import { TV_PATHS } from 'apps/tv/routes/routes';
 import { WIZARD_APP_ROUTES } from 'apps/wizard/routes/routes';
 import AppHeader from 'components/AppHeader';
 import Backdrop from 'components/Backdrop';
@@ -51,6 +52,8 @@ function RootAppLayout() {
     const location = useLocation();
     const isNewLayoutPath = [ ...Object.values(DASHBOARD_APP_PATHS), PROFILES_APP_PATH ]
         .some(path => location.pathname.startsWith(`/${path}`));
+    // The TV layout's Netflix-style pages are full screen
+    const isTvPage = layoutManager.tv && TV_PATHS.some(path => location.pathname === `/${path}`);
 
     return (
         <ThemeProvider
@@ -60,7 +63,7 @@ function RootAppLayout() {
         >
             <StartupProfilePicker />
             <Backdrop />
-            <AppHeader isHidden={layoutManager.modern || isNewLayoutPath} />
+            <AppHeader isHidden={layoutManager.modern || isNewLayoutPath || isTvPage} />
 
             <Outlet />
         </ThemeProvider>

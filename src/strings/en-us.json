@@ -2006,5 +2006,6 @@
     "MarkedAsWatched": "Marked as watched",
     "MarkedShowAsWatched": "Marked the whole show as watched",
     "RemoveFromContinueWatching": "Remove from Continue Watching",
-    "RemovedFromContinueWatching": "Removed from Continue Watching"
+    "RemovedFromContinueWatching": "Removed from Continue Watching",
+    "MarkAsUnwatched": "Mark as unwatched"
 }

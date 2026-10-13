@@ -477,9 +477,9 @@ class AppRouter {
             }
         }
 
-        // JellyFlix: movies and shows open the Netflix-style title page in the modern layout.
+        // JellyFlix: movies and shows open the Netflix-style title page in the modern and TV layouts.
         // `options.classic` keeps the full details page (editing, downloads, media info, ...) reachable.
-        if (layoutManager.modern && !options.classic) {
+        if ((layoutManager.modern || layoutManager.tv) && !options.classic) {
             if (itemType === 'Movie' || itemType === 'Series') {
                 return '#/title?id=' + id + '&serverId=' + serverId;
             }

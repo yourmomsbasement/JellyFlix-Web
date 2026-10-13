@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
+import layoutManager from 'components/layoutManager';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
@@ -39,7 +40,7 @@ const tileSx = {
         borderRadius: '6px',
         transition: 'outline-color 0.15s'
     },
-    '&:hover, &.Mui-focusVisible': {
+    '&:hover, &:focus, &.Mui-focusVisible': {
         color: '#e5e5e5',
         '& .profileTile-avatar': { outlineColor: '#e5e5e5' }
     }
@@ -47,24 +48,32 @@ const tileSx = {
 
 interface TileProps {
     label: string
+    hasInitialFocus?: boolean
     onClick: () => void
     children: ReactNode
     footer?: ReactNode
 }
 
-const Tile: FC<TileProps> = ({ label, onClick, children, footer }) => (
-    <Box component='li' sx={{ listStyle: 'none' }}>
-        <ButtonBase onClick={onClick} sx={tileSx} focusRipple>
-            <Box className='profileTile-avatar' sx={{ position: 'relative', width: '100%' }}>
-                {children}
-            </Box>
-            <Typography component='span' sx={{ fontSize: 'clamp(0.9rem, 1.3vw, 1.3rem)', color: 'inherit', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {label}
-            </Typography>
-            {footer}
-        </ButtonBase>
-    </Box>
-);
+const Tile: FC<TileProps> = ({ label, hasInitialFocus, onClick, children, footer }) => {
+    // Focused once, when the tile appears
+    const focusOnMount = useCallback((button: HTMLButtonElement | null) => {
+        if (hasInitialFocus) button?.focus();
+    }, [ hasInitialFocus ]);
+
+    return (
+        <Box component='li' sx={{ listStyle: 'none' }}>
+            <ButtonBase ref={focusOnMount} onClick={onClick} sx={tileSx} focusRipple>
+                <Box className='profileTile-avatar' sx={{ position: 'relative', width: '100%' }}>
+                    {children}
+                </Box>
+                <Typography component='span' sx={{ fontSize: 'clamp(0.9rem, 1.3vw, 1.3rem)', color: 'inherit', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {label}
+                </Typography>
+                {footer}
+            </ButtonBase>
+        </Box>
+    );
+};
 
 const getPinError = (error: unknown) => {
     switch (getProfileErrorCode(error)) {
@@ -184,6 +193,8 @@ export const Component: FC = () => {
                             <Tile
                                 key={profile.Id}
                                 label={profile.Name}
+                                // On TVs the remote starts on the profile that watched last, like Netflix
+                                hasInitialFocus={layoutManager.tv && !isManaging && profile.Id === household.CurrentProfileId}
                                 onClick={() => onProfileClick(profile)}
                                 footer={!isManaging && profile.HasPin && profile.Id !== household.CurrentProfileId && (
                                     <Lock fontSize='small' aria-label={globalize.translate('ProfileLocked')} />
