@@ -13,7 +13,19 @@ import { useUserViews } from 'hooks/api/useUserViews';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
-import { ROW_COLLECTION_TYPES, useContinueWatching, useHeroItems, useLatestInLibrary, useMyList, useNextUp } from '../features/home/api/useHomeData';
+import {
+    ROW_COLLECTION_TYPES,
+    useContinueWatching,
+    useGenreTitles,
+    useHeroItems,
+    useLatestInLibrary,
+    useMyList,
+    useNewlyAdded,
+    useNextUp,
+    useTopGenres,
+    useTopRated,
+    useWatchAgain
+} from '../features/home/api/useHomeData';
 import HeroBanner from '../features/home/components/HeroBanner';
 import MediaCard from '../features/home/components/MediaCard';
 import MediaRow, { GUTTER } from '../features/home/components/MediaRow';
@@ -26,6 +38,11 @@ const LatestRow: FC<{ library: BaseItemDto }> = ({ library }) => {
     return <MediaRow title={globalize.translate('LatestFromLibrary', library.Name ?? '')} items={data} isPending={isPending} />;
 };
 
+const GenreRow: FC<{ genre: BaseItemDto }> = ({ genre }) => {
+    const { data, isPending } = useGenreTitles(genre);
+    return <MediaRow title={genre.Name ?? ''} items={data} isPending={isPending} />;
+};
+
 const Browse: FC = () => {
     const { user } = useApi();
     const { data: household } = useHousehold();
@@ -35,12 +52,16 @@ const Browse: FC = () => {
     const resume = useContinueWatching();
     const nextUp = useNextUp();
     const myList = useMyList();
+    const newlyAdded = useNewlyAdded();
+    const topRated = useTopRated();
+    const watchAgain = useWatchAgain();
+    const { data: genres } = useTopGenres();
     const { data: views, isPending: isViewsPending } = useUserViews();
 
     const libraries = views?.Items?.filter(view => ROW_COLLECTION_TYPES.includes(view.CollectionType as CollectionType | undefined)) ?? [];
     const hasHero = !!hero.data?.length;
 
-    if (!isViewsPending && !hero.isPending && !libraries.length && !hasHero) {
+    if (!isViewsPending && !hero.isPending && !newlyAdded.isPending && !newlyAdded.data?.length && !libraries.length && !hasHero) {
         return (
             <Box sx={{ pt: APP_BAR_OFFSET, px: GUTTER, textAlign: 'center' }}>
                 <Typography variant='h2' sx={{ mt: 6 }}>{globalize.translate('MessageNothingHere')}</Typography>
@@ -53,7 +74,7 @@ const Browse: FC = () => {
             {hasHero ? <HeroBanner items={hero.data!} /> : <Box sx={{ height: APP_BAR_OFFSET }} />}
 
             {/* The first rows slide up over the bottom of the hero, like Netflix */}
-            <Box sx={{ position: 'relative', zIndex: 1, mt: hasHero ? { xs: '-10vh', md: '-14vw' } : 0, pb: 6 }}>
+            <Box sx={{ position: 'relative', zIndex: 1, mt: hasHero ? { xs: '-6vh', md: '-16vh' } : 0, pb: 6 }}>
                 <MediaRow
                     title={profileName ? globalize.translate('ContinueWatchingFor', profileName) : globalize.translate('HeaderContinueWatching')}
                     items={resume.data}
@@ -61,8 +82,13 @@ const Browse: FC = () => {
                     primaryAction='play'
                 />
                 <MediaRow title={globalize.translate('NextUp')} items={nextUp.data} isPending={nextUp.isPending} />
-                {libraries.map(library => <LatestRow key={library.Id} library={library} />)}
+                <MediaRow title={globalize.translate('NewOnJellyFlix')} items={newlyAdded.data} isPending={newlyAdded.isPending} />
                 <MediaRow title={globalize.translate('MyList')} items={myList.data} isPending={myList.isPending} />
+                <MediaRow title={globalize.translate('TopRated')} items={topRated.data} isPending={topRated.isPending} />
+                {genres?.slice(0, 3).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
+                <MediaRow title={globalize.translate('WatchItAgain')} items={watchAgain.data} isPending={watchAgain.isPending} />
+                {genres?.slice(3).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
+                {libraries.map(library => <LatestRow key={library.Id} library={library} />)}
             </Box>
         </>
     );
@@ -85,9 +111,9 @@ const MyList: FC = () => {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(5, 1fr)', xl: 'repeat(6, 1fr)' },
+                    gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(4, 1fr)', md: 'repeat(6, 1fr)', lg: 'repeat(7, 1fr)', xl: 'repeat(8, 1fr)' },
                     columnGap: 1,
-                    rowGap: 5
+                    rowGap: 3
                 }}
             >
                 {items?.map(item => <MediaCard key={item.Id} item={item} />)}

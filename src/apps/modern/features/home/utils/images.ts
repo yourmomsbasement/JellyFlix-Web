@@ -25,15 +25,6 @@ const parentBackdrop = (item: BaseItemDto): ImageRef | undefined => {
     return item.ParentBackdropItemId && tag ? { itemId: item.ParentBackdropItemId, type: ImageType.Backdrop, tag } : undefined;
 };
 
-const parentThumb = (item: BaseItemDto): ImageRef | undefined => {
-    if (item.ParentThumbItemId && item.ParentThumbImageTag) {
-        return { itemId: item.ParentThumbItemId, type: ImageType.Thumb, tag: item.ParentThumbImageTag };
-    }
-    if (item.SeriesId && item.SeriesThumbImageTag) {
-        return { itemId: item.SeriesId, type: ImageType.Thumb, tag: item.SeriesThumbImageTag };
-    }
-};
-
 /** Full-bleed background art for the hero banner. */
 export const getBackdropUrl = (api: Api | undefined, item: BaseItemDto, maxWidth = 1920) =>
     toUrl(api, ownImage(item, ImageType.Backdrop) ?? parentBackdrop(item), maxWidth);
@@ -47,16 +38,15 @@ export const getLogoUrl = (api: Api | undefined, item: BaseItemDto, maxWidth = 8
 };
 
 /**
- * 16:9 artwork for row tiles. Episodes use their own still (so Continue Watching shows where you are);
- * everything else prefers thumbs, then backdrops, then the poster.
+ * 2:3 poster artwork for row tiles. Episodes and seasons use their series' poster, so a show looks the
+ * same wherever it appears (the episode is labelled on the tile instead).
  */
-export const getLandscapeImageUrl = (api: Api | undefined, item: BaseItemDto, maxWidth = 640) => {
+export const getPosterUrl = (api: Api | undefined, item: BaseItemDto, maxWidth = 400) => {
+    const seriesPoster = item.SeriesId && item.SeriesPrimaryImageTag ?
+        { itemId: item.SeriesId, type: ImageType.Primary, tag: item.SeriesPrimaryImageTag } :
+        undefined;
     const ref = item.Type === BaseItemKind.Episode ?
-        ownImage(item, ImageType.Primary) ?? parentThumb(item) ?? parentBackdrop(item) :
-        ownImage(item, ImageType.Thumb) ?? ownImage(item, ImageType.Backdrop) ?? parentThumb(item) ?? parentBackdrop(item) ?? ownImage(item, ImageType.Primary);
+        seriesPoster ?? ownImage(item, ImageType.Primary) :
+        ownImage(item, ImageType.Primary) ?? seriesPoster;
     return toUrl(api, ref, maxWidth);
 };
-
-/** Whether the tile artwork already shows the title (thumbs usually do), so no text label is needed on top. */
-export const hasTitleInArtwork = (item: BaseItemDto) =>
-    item.Type !== BaseItemKind.Episode && !!item.ImageTags?.[ImageType.Thumb];

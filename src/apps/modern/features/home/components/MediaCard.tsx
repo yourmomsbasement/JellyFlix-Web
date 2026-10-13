@@ -10,7 +10,7 @@ import React, { type FC, type MouseEvent, useCallback } from 'react';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
-import { getLandscapeImageUrl, hasTitleInArtwork } from '../utils/images';
+import { getPosterUrl } from '../utils/images';
 import { getDisplayTitle, getEpisodeLabel, getMetaParts, getPlayedPercentage, openItem, playItem } from '../utils/items';
 
 interface MediaCardProps {
@@ -19,15 +19,14 @@ interface MediaCardProps {
     primaryAction?: 'open' | 'play'
 }
 
-/** A 16:9 row tile. It grows on hover and reveals a play button and the title details. */
+/** A 2:3 poster tile. It grows on hover and reveals a play button and the title details. */
 const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
     const { api } = useApi();
-    const imageUrl = getLandscapeImageUrl(api, item);
+    const posterUrl = getPosterUrl(api, item);
     const title = getDisplayTitle(item);
     const episodeLabel = getEpisodeLabel(item);
     // Folders (series, seasons) report how many episodes were watched; only show progress within a single video
     const progress = item.IsFolder ? 0 : getPlayedPercentage(item);
-    const showTitle = !hasTitleInArtwork(item);
 
     const onClick = useCallback(() => {
         if (primaryAction === 'play') playItem(item);
@@ -61,26 +60,27 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                 sx={{
                     display: 'block',
                     width: '100%',
-                    aspectRatio: '16 / 9',
+                    aspectRatio: '2 / 3',
                     borderRadius: 1,
                     overflow: 'hidden',
                     backgroundColor: 'background.paper',
                     textAlign: 'left',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
                     '&.Mui-focusVisible': { outline: '3px solid', outlineColor: 'text.primary' }
                 }}
             >
-                {imageUrl && (
+                {posterUrl && (
                     <Box
                         component='img'
-                        src={imageUrl}
+                        src={posterUrl}
                         alt=''
                         loading='lazy'
                         sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                 )}
 
-                {/* Title label for artwork that doesn't include the name */}
-                {(showTitle || !imageUrl) && (
+                {/* Without a poster, or for an episode, say what this is; posters carry their own title art */}
+                {(!posterUrl || episodeLabel) && (
                     <Box
                         sx={{
                             position: 'absolute',
@@ -88,15 +88,17 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'flex-end',
-                            p: 1.25,
-                            background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, transparent 55%)'
+                            p: 1,
+                            background: posterUrl ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, transparent 35%)' : undefined
                         }}
                     >
-                        <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.2, color: '#fff', textShadow: '0 1px 3px rgba(0, 0, 0, 0.6)' }} noWrap>
-                            {title}
-                        </Typography>
+                        {!posterUrl && (
+                            <Typography sx={{ fontWeight: 700, fontSize: '1rem', lineHeight: 1.2, color: '#fff' }}>
+                                {title}
+                            </Typography>
+                        )}
                         {episodeLabel && (
-                            <Typography sx={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.85)' }} noWrap>
+                            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: '#fff' }} noWrap>
                                 {episodeLabel} {item.Name}
                             </Typography>
                         )}
@@ -110,18 +112,25 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                         position: 'absolute',
                         inset: 0,
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        p: 1,
                         opacity: 0,
                         transition: 'opacity 0.3s ease 0.1s',
-                        background: 'rgba(0, 0, 0, 0.35)'
+                        background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 45%, rgba(0, 0, 0, 0.15) 100%)'
                     }}
                 >
-                    <Box sx={{ position: 'absolute', left: 10, right: 10, top: 8 }}>
-                        <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.9)' }} noWrap>
-                            {getMetaParts(item).join(' · ')}
+                    <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2, color: '#fff' }}>
+                        {title}
+                    </Typography>
+                    {episodeLabel && (
+                        <Typography sx={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.85)' }} noWrap>
+                            {episodeLabel} {item.Name}
                         </Typography>
-                    </Box>
+                    )}
+                    <Typography sx={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.75)' }} noWrap>
+                        {getMetaParts(item).join(' · ')}
+                    </Typography>
                 </Box>
             </ButtonBase>
 
@@ -132,7 +141,7 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                 aria-label={globalize.translate('Play')}
                 sx={{
                     position: 'absolute',
-                    top: '50%',
+                    top: '38%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     opacity: 0,
@@ -154,7 +163,6 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                     aria-label={globalize.translate('ButtonResume')}
                     sx={{
                         mt: 0.75,
-                        mx: '10%',
                         height: 3,
                         borderRadius: 0,
                         backgroundColor: 'rgba(255, 255, 255, 0.25)',

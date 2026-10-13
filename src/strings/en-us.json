@@ -1976,5 +1976,11 @@
     "MyList": "My List",
     "MyListEmpty": "You haven't added any titles to your list yet. Mark a movie or show as a favorite to add it here.",
     "SeasonCount": "{0} Seasons",
-    "SeasonCountSingular": "{0} Season"
+    "SeasonCountSingular": "{0} Season",
+    "NewOnJellyFlix": "New on JellyFlix",
+    "TopRated": "Top Rated",
+    "WatchItAgain": "Watch It Again",
+    "WatchTrailer": "Watch Trailer",
+    "HeroKickerFilm": "FILM",
+    "HeroKickerSeries": "SERIES"
 }

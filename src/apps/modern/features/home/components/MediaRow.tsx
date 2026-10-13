@@ -12,8 +12,8 @@ import MediaCard from './MediaCard';
 /** Page side gutter, matching Netflix's 4%. */
 export const GUTTER = '4%';
 
-/** How many tiles fit across the row at each breakpoint (the next one peeks in, inviting a scroll). */
-const TILES_PER_ROW = { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 };
+/** How many posters fit across the row at each breakpoint (the next one peeks in, inviting a scroll). */
+export const TILES_PER_ROW = { xs: 3, sm: 4, md: 6, lg: 7, xl: 8 };
 const TILE_GAP = 8;
 
 const tileWidthSx = Object.fromEntries(
@@ -118,7 +118,7 @@ const MediaRow: FC<MediaRowProps> = ({ title, items, isPending = false, primaryA
                     {isPending ? (
                         Array.from({ length: 6 }, (_, i) => (
                             <Box key={i} sx={{ flex: '0 0 auto', width: tileWidthSx }}>
-                                <Skeleton variant='rounded' sx={{ width: '100%', height: 'auto', aspectRatio: '16 / 9' }} />
+                                <Skeleton variant='rounded' sx={{ width: '100%', height: 'auto', aspectRatio: '2 / 3' }} />
                             </Box>
                         ))
                     ) : (

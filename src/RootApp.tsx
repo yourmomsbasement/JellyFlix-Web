@@ -1,4 +1,5 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import React from 'react';
 
@@ -19,7 +20,11 @@ const RootApp = () => (
         client={queryClient}
         persistOptions={{
             buster: __JF_BUILD_VERSION__,
-            persister
+            persister,
+            dehydrateOptions: {
+                // Queries can opt out of being saved across sessions with `meta: { persist: false }`
+                shouldDehydrateQuery: query => defaultShouldDehydrateQuery(query) && query.meta?.persist !== false
+            }
         }}
     >
         <ApiProvider>
