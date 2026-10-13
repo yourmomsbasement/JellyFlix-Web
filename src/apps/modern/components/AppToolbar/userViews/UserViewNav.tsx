@@ -2,7 +2,6 @@ import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models/base
 import { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-item-kind';
 import { CollectionType } from '@jellyfin/sdk/lib/generated-client/models/collection-type';
 import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
-import Favorite from '@mui/icons-material/Favorite';
 import Button from '@mui/material/Button/Button';
 import Icon from '@mui/material/Icon';
 import { Theme } from '@mui/material/styles';
@@ -10,7 +9,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
-import LibraryIcon from 'apps/modern/components/LibraryIcon';
 import { MetaView } from 'apps/modern/constants/metaView';
 import { useAncestors } from 'apps/modern/features/libraries/hooks/api/useAncestors';
 import { isDetailsPath, isLibraryPath } from 'apps/modern/features/libraries/utils/path';
@@ -28,6 +26,21 @@ const MAX_USER_VIEWS_LG = 5;
 const MAX_USER_VIEWS_XL = 8;
 
 const OVERFLOW_MENU_ID = 'user-view-overflow-menu';
+
+/** Netflix-style plain text links: the current page is bold and bright, the rest are dimmed. */
+const getNavButtonSx = (isActive: boolean) => ({
+    minWidth: 0,
+    px: 1.25,
+    fontSize: '0.875rem',
+    fontWeight: isActive ? 700 : 400,
+    color: isActive ? 'text.primary' : 'text.secondary',
+    whiteSpace: 'nowrap',
+    transition: 'color 0.4s',
+    '&:hover': {
+        color: 'text.primary',
+        backgroundColor: 'transparent'
+    }
+});
 
 const HOME_PATH = '/home';
 const LIST_PATH = '/list';
@@ -121,16 +134,17 @@ const UserViewNav = () => {
 
     if (isPending) return null;
 
+    const isHome = location.pathname === HOME_PATH && activeTab !== 1;
+
     return (
         <>
             <Button
                 variant='text'
-                color={(currentUserView?.Id === MetaView.Favorites.Id) ? 'primary' : 'inherit'}
-                startIcon={<Favorite />}
+                sx={getNavButtonSx(isHome)}
                 component={Link}
-                to='/home?tab=1'
+                to={HOME_PATH}
             >
-                {globalize.translate(MetaView.Favorites.Name)}
+                {globalize.translate('Home')}
             </Button>
 
             {primaryNavItems?.map(navItem => {
@@ -139,8 +153,8 @@ const UserViewNav = () => {
                         <Button
                             key={navItem.name}
                             variant='text'
-                            color='inherit'
-                            startIcon={<Icon>{navItem.icon || 'link'}</Icon>}
+                            sx={getNavButtonSx(false)}
+                            startIcon={navItem.icon ? <Icon>{navItem.icon}</Icon> : undefined}
                             component='a'
                             href={navItem.url}
                             target='_blank'
@@ -155,8 +169,7 @@ const UserViewNav = () => {
                     <Button
                         key={navItem.Id}
                         variant='text'
-                        color={(navItem.Id === currentUserView?.Id) ? 'primary' : 'inherit'}
-                        startIcon={<LibraryIcon item={navItem} />}
+                        sx={getNavButtonSx(navItem.Id === currentUserView?.Id)}
                         component={Link}
                         to={appRouter.getRouteUrl(navItem, { context: navItem.CollectionType }).substring(1)}
                     >
@@ -165,11 +178,20 @@ const UserViewNav = () => {
                 );
             })}
 
+            <Button
+                variant='text'
+                sx={getNavButtonSx(currentUserView?.Id === MetaView.Favorites.Id)}
+                component={Link}
+                to='/home?tab=1'
+            >
+                {globalize.translate('MyList')}
+            </Button>
+
             {overflowNavItems && overflowNavItems.length > 0 && (
                 <>
                     <Button
                         variant='text'
-                        color='inherit'
+                        sx={getNavButtonSx(false)}
                         endIcon={<ArrowDropDown />}
                         aria-controls={OVERFLOW_MENU_ID}
                         aria-haspopup='true'

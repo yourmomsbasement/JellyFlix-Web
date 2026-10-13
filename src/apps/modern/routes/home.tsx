@@ -1,187 +1,120 @@
-import { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-item-kind';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models/base-item-dto';
+import type { CollectionType } from '@jellyfin/sdk/lib/generated-client/models/collection-type';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import React, { type FC, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import globalize from '../../../lib/globalize';
-import { clearBackdrop } from '../../../components/backdrop/backdrop';
-import layoutManager from '../../../components/layoutManager';
-import Page from '../../../components/Page';
-import { EventType } from 'constants/eventType';
-import Events from 'utils/events';
+import { useHousehold } from 'apps/profiles/api/profiles';
+import { clearBackdrop } from 'components/backdrop/backdrop';
+import Page from 'components/Page';
+import { useUserViews } from 'hooks/api/useUserViews';
+import { useApi } from 'hooks/useApi';
+import globalize from 'lib/globalize';
 
-import '../../../elements/emby-tabs/emby-tabs';
-import '../../../elements/emby-button/emby-button';
-import '../../../elements/emby-scroller/emby-scroller';
+import { ROW_COLLECTION_TYPES, useContinueWatching, useHeroItems, useLatestInLibrary, useMyList, useNextUp } from '../features/home/api/useHomeData';
+import HeroBanner from '../features/home/components/HeroBanner';
+import MediaCard from '../features/home/components/MediaCard';
+import MediaRow, { GUTTER } from '../features/home/components/MediaRow';
 
-type OnResumeOptions = {
-    autoFocus?: boolean;
-    refresh?: boolean
+/** Space for the app bar on pages without a hero underneath it. */
+const APP_BAR_OFFSET = '72px';
+
+const LatestRow: FC<{ library: BaseItemDto }> = ({ library }) => {
+    const { data, isPending } = useLatestInLibrary(library);
+    return <MediaRow title={globalize.translate('LatestFromLibrary', library.Name ?? '')} items={data} isPending={isPending} />;
 };
 
-type ControllerProps = {
-    onResume: (
-        options: OnResumeOptions
-    ) => void;
-    refreshed: boolean;
-    onPause: () => void;
-    destroy: () => void;
-};
+const Browse: FC = () => {
+    const { user } = useApi();
+    const { data: household } = useHousehold();
+    const profileName = household?.Profiles.find(p => p.Id === household.CurrentProfileId)?.Name ?? user?.Name;
 
-const Home = () => {
-    const [ searchParams ] = useSearchParams();
-    const initialTabIndex = parseInt(searchParams.get('tab') ?? '0', 10);
+    const hero = useHeroItems();
+    const resume = useContinueWatching();
+    const nextUp = useNextUp();
+    const myList = useMyList();
+    const { data: views, isPending: isViewsPending } = useUserViews();
 
-    const libraryMenu = useMemo(async () => ((await import('../../../scripts/libraryMenu')).default), []);
-    const mainTabsManager = useMemo(() => import('../../../components/maintabsmanager'), []);
-    const tabController = useRef<ControllerProps | null>();
-    const tabControllers = useMemo<ControllerProps[]>(() => [], []);
+    const libraries = views?.Items?.filter(view => ROW_COLLECTION_TYPES.includes(view.CollectionType as CollectionType | undefined)) ?? [];
+    const hasHero = !!hero.data?.length;
 
-    const documentRef = useRef<Document>(document);
-    const element = useRef<HTMLDivElement>(null);
-
-    const setTitle = async () => {
-        (await libraryMenu).setTitle(null);
-    };
-
-    const getTabs = () => {
-        return [{
-            name: globalize.translate('Home')
-        }, {
-            name: globalize.translate('Favorites')
-        }];
-    };
-
-    const getTabContainers = () => {
-        return element.current?.querySelectorAll('.tabContent');
-    };
-
-    const getTabController = useCallback((index: number) => {
-        if (index == null) {
-            throw new Error('index cannot be null');
-        }
-
-        let depends = '';
-
-        switch (index) {
-            case 0:
-                depends = 'hometab';
-                break;
-
-            case 1:
-                depends = 'favorites';
-        }
-
-        return import(/* webpackChunkName: "[request]" */ `../../../apps/legacy/controllers/${depends}`).then(({ default: ControllerFactory }) => {
-            let controller = tabControllers[index];
-
-            if (!controller) {
-                const tabContent = element.current?.querySelector(".tabContent[data-index='" + index + "']");
-                controller = new ControllerFactory(tabContent, null);
-                tabControllers[index] = controller;
-            }
-
-            return controller;
-        });
-    }, [ tabControllers ]);
-
-    const loadTab = useCallback((index: number, previousIndex: number | null) => {
-        getTabController(index).then((controller) => {
-            const refresh = !controller.refreshed;
-
-            controller.onResume({
-                autoFocus: previousIndex == null && layoutManager.tv,
-                refresh: refresh
-            });
-
-            controller.refreshed = true;
-            tabController.current = controller;
-        }).catch(err => {
-            console.error('[Home] failed to get tab controller', err);
-        });
-    }, [ getTabController ]);
-
-    const onTabChange = useCallback((e: { detail: { selectedTabIndex: string; previousIndex: number | null }; }) => {
-        const newIndex = parseInt(e.detail.selectedTabIndex, 10);
-        const previousIndex = e.detail.previousIndex;
-
-        const previousTabController = previousIndex == null ? null : tabControllers[previousIndex];
-        if (previousTabController?.onPause) {
-            previousTabController.onPause();
-        }
-
-        loadTab(newIndex, previousIndex);
-    }, [ loadTab, tabControllers ]);
-
-    const onSetTabs = useCallback(async () => {
-        (await mainTabsManager).setTabs(element.current, initialTabIndex, getTabs, getTabContainers, null, onTabChange, false);
-    }, [ initialTabIndex, mainTabsManager, onTabChange ]);
-
-    const onResume = useCallback(async () => {
-        void setTitle();
-        clearBackdrop();
-
-        const currentTabController = tabController.current;
-
-        if (!currentTabController) {
-            (await mainTabsManager).selectedTabIndex(initialTabIndex);
-        } else if (currentTabController?.onResume) {
-            currentTabController.onResume({});
-        }
-        (documentRef.current.querySelector('.skinHeader') as HTMLDivElement).classList.add('noHomeButtonHeader');
-    }, [ initialTabIndex, mainTabsManager ]);
-
-    const onPause = useCallback(() => {
-        const currentTabController = tabController.current;
-        if (currentTabController?.onPause) {
-            currentTabController.onPause();
-        }
-        (documentRef.current.querySelector('.skinHeader') as HTMLDivElement).classList.remove('noHomeButtonHeader');
-    }, []);
-
-    const renderHome = useCallback(() => {
-        void onSetTabs();
-        void onResume();
-    }, [ onResume, onSetTabs ]);
-
-    useEffect(() => {
-        if (documentRef.current?.querySelector('.headerTabs')) {
-            renderHome();
-        }
-
-        return () => {
-            onPause();
-        };
-    }, [onPause, renderHome]);
-
-    useEffect(() => {
-        const doc = documentRef.current;
-        if (doc) Events.on(doc, EventType.HEADER_RENDERED, renderHome);
-
-        return () => {
-            if (doc) Events.off(doc, EventType.HEADER_RENDERED, renderHome);
-        };
-    }, [ renderHome ]);
+    if (!isViewsPending && !hero.isPending && !libraries.length && !hasHero) {
+        return (
+            <Box sx={{ pt: APP_BAR_OFFSET, px: GUTTER, textAlign: 'center' }}>
+                <Typography variant='h2' sx={{ mt: 6 }}>{globalize.translate('MessageNothingHere')}</Typography>
+            </Box>
+        );
+    }
 
     return (
-        <div ref={element}>
-            <Page
-                id='indexPage'
-                className='mainAnimatedPage homePage libraryPage allLibraryPage pageWithAbsoluteTabs withTabs'
-                isBackButtonEnabled={false}
-                backDropType={[
-                    BaseItemKind.Movie,
-                    BaseItemKind.Series,
-                    BaseItemKind.Book
-                ]}
+        <>
+            {hasHero ? <HeroBanner items={hero.data!} /> : <Box sx={{ height: APP_BAR_OFFSET }} />}
+
+            {/* The first rows slide up over the bottom of the hero, like Netflix */}
+            <Box sx={{ position: 'relative', zIndex: 1, mt: hasHero ? { xs: '-10vh', md: '-14vw' } : 0, pb: 6 }}>
+                <MediaRow
+                    title={profileName ? globalize.translate('ContinueWatchingFor', profileName) : globalize.translate('HeaderContinueWatching')}
+                    items={resume.data}
+                    isPending={resume.isPending}
+                    primaryAction='play'
+                />
+                <MediaRow title={globalize.translate('NextUp')} items={nextUp.data} isPending={nextUp.isPending} />
+                {libraries.map(library => <LatestRow key={library.Id} library={library} />)}
+                <MediaRow title={globalize.translate('MyList')} items={myList.data} isPending={myList.isPending} />
+            </Box>
+        </>
+    );
+};
+
+const MyList: FC = () => {
+    const { data: items, isPending } = useMyList();
+
+    return (
+        <Box sx={{ pt: APP_BAR_OFFSET, px: GUTTER, pb: 6 }}>
+            <Typography component='h1' sx={{ mt: 3, mb: 3, fontSize: { xs: '1.5rem', md: '2.2rem' }, fontWeight: 700, color: 'text.primary' }}>
+                {globalize.translate('MyList')}
+            </Typography>
+
+            {isPending && <CircularProgress />}
+            {!isPending && !items?.length && (
+                <Typography sx={{ color: 'text.secondary' }}>{globalize.translate('MyListEmpty')}</Typography>
+            )}
+
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(5, 1fr)', xl: 'repeat(6, 1fr)' },
+                    columnGap: 1,
+                    rowGap: 5
+                }}
             >
-                <div className='tabContent pageTabContent' id='homeTab' data-index='0'>
-                    <div className='sections'></div>
-                </div>
-                <div className='tabContent pageTabContent' id='favoritesTab' data-index='1'>
-                    <div className='sections'></div>
-                </div>
-            </Page>
-        </div>
+                {items?.map(item => <MediaCard key={item.Id} item={item} />)}
+            </Box>
+        </Box>
+    );
+};
+
+const Home: FC = () => {
+    const [ searchParams ] = useSearchParams();
+    const isMyList = searchParams.get('tab') === '1';
+
+    useEffect(() => {
+        clearBackdrop();
+        import('../../../scripts/libraryMenu')
+            .then(({ default: libraryMenu }) => libraryMenu.setTitle(null))
+            .catch(err => console.error('[Home] failed to set title', err));
+    }, []);
+
+    return (
+        <Page
+            id='indexPage'
+            className='mainAnimatedPage homePage'
+            isBackButtonEnabled={false}
+        >
+            {isMyList ? <MyList /> : <Browse />}
+        </Page>
     );
 };
 

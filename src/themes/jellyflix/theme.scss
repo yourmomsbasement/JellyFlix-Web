@@ -1,0 +1,60 @@
+@use '../_base/theme' with (
+    // Theme options
+    $dark: true,
+
+    // Color palette
+    $background-default: #141414,
+    $background-paper: #181818,
+    $primary-main: #e50914,
+    $primary-dark: #b20710,
+    $primary-light: #f6121d,
+    $primary-hover: rgba(229, 9, 20, 0.2),
+    $primary-contrastText: #fff,
+    $text-primary: #fff,
+    $text-secondary: #b3b3b3,
+    $action-focus: rgba(255, 255, 255, 0.16),
+    $action-hover: rgba(255, 255, 255, 0.1),
+    $divider: rgba(255, 255, 255, 0.1),
+
+    // Components
+    $appBar-defaultBg: #141414,
+    $appBar-transparentBg: transparent,
+    $filledInput-bg: #333,
+    $card-borderRadius: 4px,
+    $alert-infoFilledBg: #333,
+    $alert-infoFilledColor: #fff,
+    $button-inheritContainedBg: rgba(109, 109, 110, 0.7),
+    $button-inheritContainedHoverBg: rgba(109, 109, 110, 0.4),
+    $snackbarContent-bg: #e5e5e5,
+    $snackbarContent-color: #141414
+);
+
+/* Card background color variants (shown while images load or when an item has none) */
+.defaultCardBackground1 {
+    background-color: #2f2f2f;
+}
+
+.defaultCardBackground2 {
+    background-color: #3a1214;
+}
+
+.defaultCardBackground3 {
+    background-color: #232323;
+}
+
+.defaultCardBackground4 {
+    background-color: #4a1a1d;
+}
+
+.defaultCardBackground5 {
+    background-color: #1c1c1c;
+}
+
+/* Detail ribbon on item details pages */
+.detailRibbon {
+    background: linear-gradient(180deg, rgba(20, 20, 20, 0) 0%, #141414 60%);
+
+    .layout-tv & {
+        background: none;
+    }
+}

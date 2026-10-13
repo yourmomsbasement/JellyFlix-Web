@@ -2,7 +2,7 @@ import React, { StrictMode, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import { type Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 
 import AppBody from 'components/AppBody';
 import CustomCss from 'components/CustomCss';
@@ -22,6 +22,9 @@ export const Component = () => {
     const [ isDrawerActive, setIsDrawerActive ] = useState(false);
     const { user } = useApi();
     const location = useLocation();
+    const [ searchParams ] = useSearchParams();
+    // The home page hero runs underneath the app bar, Netflix-style
+    const isHeroPage = location.pathname === '/home' && searchParams.get('tab') !== '1';
 
     const isMediumScreen = useMediaQuery((t: Theme) => t.breakpoints.up('md'));
     const isDrawerAvailable = isDrawerPath(location.pathname) && Boolean(user) && !isMediumScreen;
@@ -42,7 +45,7 @@ export const Component = () => {
                 }}
             >
                 <StrictMode>
-                    <OffsetAppBar dense>
+                    <OffsetAppBar dense overlay={isHeroPage}>
                         <AppToolbar
                             isDrawerAvailable={!isMediumScreen && isDrawerAvailable}
                             isDrawerOpen={isDrawerOpen}

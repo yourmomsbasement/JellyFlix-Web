@@ -1969,5 +1969,12 @@
     "ProfilePinLocked": "Too many wrong PINs. Try again in 15 minutes.",
     "RemoveProfilePin": "Remove profile lock",
     "SwitchProfile": "Switch Profile",
-    "WhoIsWatching": "Who's watching?"
+    "WhoIsWatching": "Who's watching?",
+    "ContinueWatchingFor": "Continue Watching for {0}",
+    "Featured": "Featured",
+    "MoreInfo": "More Info",
+    "MyList": "My List",
+    "MyListEmpty": "You haven't added any titles to your list yet. Mark a movie or show as a favorite to add it here.",
+    "SeasonCount": "{0} Seasons",
+    "SeasonCountSingular": "{0} Season"
 }

@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 
 import { appRouter, PUBLIC_PATHS } from 'components/router/appRouter';
 import BaseToolbar from 'components/toolbar/AppToolbar';
-import ServerButton from 'components/toolbar/ServerButton';
 
+import JellyFlixLogo from './JellyFlixLogo';
 import RemotePlayButton from './RemotePlayButton';
 import SyncPlayButton from './SyncPlayButton';
 import SearchButton from './SearchButton';
@@ -49,18 +49,17 @@ const AppToolbar: FC<AppToolbarProps> = ({
             isUserMenuAvailable={!isPublicPath}
             className='padded-left padded-right'
         >
-            {!isDrawerAvailable && (
-                <Stack
-                    direction='row'
-                    spacing={0.5}
-                >
-                    <ServerButton />
+            <Stack
+                direction='row'
+                spacing={0.5}
+                sx={{ alignItems: 'center' }}
+            >
+                <JellyFlixLogo />
 
-                    {!isPublicPath && (
-                        <UserViewNav />
-                    )}
-                </Stack>
-            )}
+                {!isDrawerAvailable && !isPublicPath && (
+                    <UserViewNav />
+                )}
+            </Stack>
         </BaseToolbar>
     );
 };

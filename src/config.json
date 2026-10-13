@@ -13,7 +13,11 @@
     }, {
       "name": "Dark",
       "id": "dark",
-      "color": "#202020",
+      "color": "#202020"
+    }, {
+      "name": "JellyFlix",
+      "id": "jellyflix",
+      "color": "#141414",
       "default": true
     }, {
       "name": "Light",

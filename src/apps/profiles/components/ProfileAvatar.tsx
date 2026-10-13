@@ -9,10 +9,12 @@ import { getProfileImageUrl, type Profile } from '../api/profiles';
 interface ProfileAvatarProps {
     profile: Pick<Profile, 'Id' | 'Name' | 'AvatarColor' | 'PrimaryImageTag' | 'IsKids'>
     size?: string | number
+    /** Hide the KIDS ribbon, e.g. on small avatars where it wouldn't fit. */
+    hideKidsBadge?: boolean
 }
 
 /** A square profile avatar: the user's image if it has one, otherwise a smiley on the profile color. */
-const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%' }) => {
+const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%', hideKidsBadge = false }) => {
     const { api } = useApi();
     const imageUrl = getProfileImageUrl(api, profile as Profile);
 
@@ -42,7 +44,7 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%' }) => {
                     <path d='M24 60 Q50 84 76 60' stroke='#fff' strokeWidth='7' fill='none' strokeLinecap='round' />
                 </Box>
             )}
-            {profile.IsKids && (
+            {profile.IsKids && !hideKidsBadge && (
                 <Box
                     component='span'
                     sx={{

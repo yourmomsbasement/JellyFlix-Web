@@ -13,6 +13,8 @@ interface OffsetAppBarProps extends AppBarProps {
     dense?: boolean;
     /** The elevation to apply when the user has scrolled. Defaults to 1. */
     elevation?: number;
+    /** Let the page start underneath the AppBar (e.g. for a full-bleed hero image) instead of reserving space for it. */
+    overlay?: boolean;
 }
 
 /**
@@ -22,6 +24,8 @@ const OffsetAppBar: FC<PropsWithChildren<OffsetAppBarProps>> = ({
     children,
     dense = false,
     elevation = 1,
+    overlay = false,
+    sx,
     ...props
 }) => {
     const appBarRef = useRef<HTMLHtmlElement>(null);
@@ -70,18 +74,28 @@ const OffsetAppBar: FC<PropsWithChildren<OffsetAppBarProps>> = ({
                 position='fixed'
                 color={scrollTrigger ? 'default' : 'transparent'}
                 elevation={scrollTrigger ? elevation : 0}
+                sx={[
+                    {
+                        transition: 'background-color 0.4s',
+                        // Keep the bar readable over artwork until it turns solid on scroll
+                        backgroundImage: scrollTrigger ? 'none' : 'linear-gradient(180deg, rgba(0, 0, 0, 0.7) 10%, transparent)'
+                    },
+                    ...(Array.isArray(sx) ? sx : [ sx ])
+                ]}
             >
                 {children}
             </AppBar>
             {/* Spacer to prevent content rendering under the AppBar */}
-            <div
-                aria-hidden='true'
-                style={{
-                    height,
-                    width: '100%',
-                    flexShrink: 0
-                }}
-            />
+            {!overlay && (
+                <div
+                    aria-hidden='true'
+                    style={{
+                        height,
+                        width: '100%',
+                        flexShrink: 0
+                    }}
+                />
+            )}
         </>
     );
 };
