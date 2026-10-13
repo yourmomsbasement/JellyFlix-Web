@@ -6,6 +6,8 @@ import { isAxiosError, type AxiosRequestConfig } from 'axios';
 import { useApi } from 'hooks/useApi';
 import { ServerConnections } from 'lib/jellyfin-apiclient';
 
+import { markProfileSwitch } from '../startup';
+
 /** A profile in the household, as returned by the JellyFlix Profiles server plugin. */
 export interface Profile {
     Id: string
@@ -100,7 +102,7 @@ export const useDeleteProfile = () => useHouseholdMutation(
  * Switches this device to another profile. The server signs out the current session, so the
  * app is reloaded afterwards to drop everything cached for the previous profile.
  */
-export const switchToProfile = async (api: Api, profileId: string, pin?: string) => {
+export const switchToProfile = async (api: Api, profileId: string, pin?: string, target = '/home') => {
     const result = await request<AuthenticationResult>(api, 'POST', `/${profileId}/Switch`, { Pin: pin });
 
     // Store the new session exactly like a normal sign in does.
@@ -108,6 +110,7 @@ export const switchToProfile = async (api: Api, profileId: string, pin?: string)
     if (!apiClient?.onAuthenticated) throw new Error('[profiles] No API client available');
     await apiClient.onAuthenticated(apiClient, result);
 
-    window.location.hash = '#/home';
+    markProfileSwitch();
+    window.location.hash = '#' + target;
     window.location.reload();
 };

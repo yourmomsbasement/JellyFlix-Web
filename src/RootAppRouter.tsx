@@ -10,6 +10,7 @@ import {
 import { DASHBOARD_APP_PATHS, DASHBOARD_APP_ROUTES } from 'apps/dashboard/routes/routes';
 import { APP_ROUTES as MODERN_APP_ROUTES } from 'apps/modern/routes/routes';
 import { APP_ROUTES as LEGACY_APP_ROUTES } from 'apps/legacy/routes/routes';
+import StartupProfilePicker from 'apps/profiles/components/StartupProfilePicker';
 import { PROFILES_APP_PATH, PROFILES_APP_ROUTES } from 'apps/profiles/routes/routes';
 import { WIZARD_APP_ROUTES } from 'apps/wizard/routes/routes';
 import AppHeader from 'components/AppHeader';
@@ -57,6 +58,7 @@ function RootAppLayout() {
             defaultMode='dark'
             storageManager={ThemeStorageManager}
         >
+            <StartupProfilePicker />
             <Backdrop />
             <AppHeader isHidden={layoutManager.modern || isNewLayoutPath} />
 

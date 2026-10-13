@@ -8,7 +8,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
@@ -23,6 +23,7 @@ import {
 import PinDialog from '../components/PinDialog';
 import ProfileAvatar from '../components/ProfileAvatar';
 import ProfileEditor from '../components/ProfileEditor';
+import { getReturnTarget } from '../startup';
 
 const TILE_SIZE = 'clamp(84px, 10vw, 180px)';
 
@@ -81,7 +82,10 @@ export const Component: FC = () => {
     const { api } = useApi();
     const [ searchParams, setSearchParams ] = useSearchParams();
     const isManaging = searchParams.get('manage') === 'true';
-    const isFromLogin = searchParams.get('from') === 'login';
+    // Asked automatically, right after sign in or when the app starts, rather than from "Switch profile"
+    const isAutomatic = [ 'login', 'start' ].includes(searchParams.get('from') ?? '');
+    const target = getReturnTarget(searchParams.get('return'));
+    const navigate = useNavigate();
 
     const { data: household, error, isPending } = useHousehold();
 
@@ -98,7 +102,7 @@ export const Component: FC = () => {
     const doSwitch = useCallback((profile: Profile, pin?: string) => {
         if (!api) return;
         setIsSwitching(true);
-        switchToProfile(api, profile.Id, pin).catch(err => {
+        switchToProfile(api, profile.Id, pin, target).catch(err => {
             setIsSwitching(false);
             if (pin !== undefined) {
                 setPinError(getPinError(err));
@@ -106,30 +110,34 @@ export const Component: FC = () => {
                 setSwitchError(globalize.translate('ErrorDefault'));
             }
         });
-    }, [ api ]);
+    }, [ api, target ]);
 
     const onProfileClick = useCallback((profile: Profile) => {
         if (isManaging) {
             setEditing({ profile });
         } else if (profile.Id === household?.CurrentProfileId) {
             // Already signed in as this profile; nothing to switch.
-            window.location.hash = '#/home';
+            navigate(target, { replace: isAutomatic });
         } else if (profile.HasPin) {
             setPinError(undefined);
             setPinProfile(profile);
         } else {
             doSwitch(profile);
         }
-    }, [ isManaging, household?.CurrentProfileId, doSwitch ]);
+    }, [ isManaging, household?.CurrentProfileId, doSwitch, navigate, target, isAutomatic ]);
 
     const setManaging = useCallback((manage: boolean) => {
-        setSearchParams(manage ? { manage: 'true' } : {}, { replace: true });
+        setSearchParams(params => {
+            if (manage) params.set('manage', 'true');
+            else params.delete('manage');
+            return params;
+        }, { replace: true });
     }, [ setSearchParams ]);
 
     // Without the server plugin there are no profiles: carry on to the app as before.
-    if (error && isPluginMissing(error)) return <Navigate replace to='/home' />;
-    // Right after sign in, only ask "who's watching" when there is a choice to make.
-    if (isFromLogin && household && household.Profiles.length <= 1) return <Navigate replace to='/home' />;
+    if (error && isPluginMissing(error)) return <Navigate replace to={target} />;
+    // When asked automatically, only ask "who's watching" when there is a choice to make.
+    if (isAutomatic && household && household.Profiles.length <= 1) return <Navigate replace to={target} />;
 
     const canEdit = (profile: Profile) => household?.CanManage || profile.Id === household?.CurrentProfileId;
     const showKidsPinWarning = isManaging && household?.CanManage
