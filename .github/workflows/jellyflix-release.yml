@@ -1,0 +1,74 @@
+name: JellyFlix web release 🎬
+
+# Builds the JellyFlix web client and publishes it as a GitHub release. The JellyFlix server plugin's
+# Web Updater downloads these releases and installs them on the Jellyfin server.
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: jellyflix-release
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    # Never in the upstream repository
+    if: ${{ github.repository != 'jellyfin/jellyfin-web' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ⬇️
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup node environment ⚙️
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          check-latest: true
+
+      - name: Install dependencies 📦
+        run: npm ci --no-audit
+
+      - name: Build 👷
+        run: npm run build:production
+
+      - name: Package 📦
+        id: package
+        run: |
+          version="$(date -u +%Y.%m.%d).${GITHUB_RUN_NUMBER}"
+          # The Jellyfin server major.minor this client is built for, e.g. "13.0"
+          server_version="$(node -p "require('./package.json').version.split('.').slice(0, 2).join('.')")"
+
+          (cd dist && zip -qr ../jellyflix-web.zip .)
+          sha256sum jellyflix-web.zip | cut -d' ' -f1 > jellyflix-web.zip.sha256
+          cat > release.json <<EOF
+          {
+            "version": "${version}",
+            "commit": "${GITHUB_SHA}",
+            "serverVersion": "${server_version}"
+          }
+          EOF
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "server_version=${server_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release 🚀
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.package.outputs.version }}
+          SERVER_VERSION: ${{ steps.package.outputs.server_version }}
+        run: |
+          gh release create "web-${VERSION}" \
+            jellyflix-web.zip jellyflix-web.zip.sha256 release.json \
+            --target "${GITHUB_SHA}" \
+            --title "JellyFlix web ${VERSION}" \
+            --notes "JellyFlix web client for Jellyfin ${SERVER_VERSION}, built from ${GITHUB_SHA}. Installed automatically by the JellyFlix plugin's Web Updater."
