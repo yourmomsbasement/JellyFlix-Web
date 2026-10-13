@@ -72,6 +72,8 @@ declare module 'jellyfin-apiclient' {
 
     class ApiClient {
         _sdk?: Api;
+        /** Set by the connection manager; stores a new session the same way a sign in does. */
+        onAuthenticated?: (apiClient: ApiClient, result: AuthenticationResult) => Promise<void>;
 
         constructor(serverAddress: string, appName: string, appVersion: string, deviceName: string, deviceId: string);
 

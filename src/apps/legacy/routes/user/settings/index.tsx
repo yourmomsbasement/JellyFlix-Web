@@ -2,6 +2,7 @@ import type { UserDto } from '@jellyfin/sdk/lib/generated-client/models/user-dto
 import React, { useEffect, useMemo, useState, type FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useHousehold } from 'apps/profiles/api/profiles';
 import { appHost } from 'components/apphost';
 import layoutManager from 'components/layoutManager';
 import Loading from 'components/loading/LoadingComponent';
@@ -25,6 +26,8 @@ const UserSettingsPage: FC = () => {
         isPending: isQuickConnectEnabledPending
     } = useQuickConnectEnabled();
     const { data: users } = useUsers();
+    // Only present when the server has the JellyFlix Profiles plugin.
+    const { data: household } = useHousehold();
     const [ user, setUser ] = useState<UserDto>();
 
     const userId = useMemo(() => (
@@ -73,6 +76,27 @@ const UserSettingsPage: FC = () => {
                         >
                             {user.Name}
                         </h2>
+
+                        {household && isLoggedInUser && (
+                            <LinkButton
+                                href='#/profiles'
+                                className='lnkSwitchProfile listItem-border'
+                                style={{
+                                    display: 'block',
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                <div className='listItem'>
+                                    <span className='material-icons listItemIcon listItemIcon-transparent switch_account' aria-hidden='true' />
+                                    <div className='listItemBody'>
+                                        <div className='listItemBodyText'>
+                                            {globalize.translate('SwitchProfile')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </LinkButton>
+                        )}
 
                         <LinkButton
                             href={`#/userprofile?userId=${userId}`}

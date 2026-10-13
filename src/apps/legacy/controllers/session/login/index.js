@@ -211,7 +211,8 @@ export default function (view, params) {
             }
         }
 
-        return '/home';
+        // Ask "who's watching?" first; the profile screen skips itself when there is only one profile.
+        return '/profiles?from=login';
     }
 
     function showVisualForm() {

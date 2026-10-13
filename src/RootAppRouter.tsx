@@ -10,6 +10,7 @@ import {
 import { DASHBOARD_APP_PATHS, DASHBOARD_APP_ROUTES } from 'apps/dashboard/routes/routes';
 import { APP_ROUTES as MODERN_APP_ROUTES } from 'apps/modern/routes/routes';
 import { APP_ROUTES as LEGACY_APP_ROUTES } from 'apps/legacy/routes/routes';
+import { PROFILES_APP_PATH, PROFILES_APP_ROUTES } from 'apps/profiles/routes/routes';
 import { WIZARD_APP_ROUTES } from 'apps/wizard/routes/routes';
 import AppHeader from 'components/AppHeader';
 import Backdrop from 'components/Backdrop';
@@ -23,6 +24,7 @@ const router = createHashRouter([
     {
         element: <RootAppLayout />,
         children: [
+            ...PROFILES_APP_ROUTES,
             ...(layoutManager.modern ? MODERN_APP_ROUTES : LEGACY_APP_ROUTES),
             ...DASHBOARD_APP_ROUTES,
             ...WIZARD_APP_ROUTES,
@@ -46,7 +48,7 @@ export default function RootAppRouter() {
  */
 function RootAppLayout() {
     const location = useLocation();
-    const isNewLayoutPath = Object.values(DASHBOARD_APP_PATHS)
+    const isNewLayoutPath = [ ...Object.values(DASHBOARD_APP_PATHS), PROFILES_APP_PATH ]
         .some(path => location.pathname.startsWith(`/${path}`));
 
     return (

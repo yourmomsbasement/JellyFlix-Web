@@ -8,6 +8,7 @@ import Logout from '@mui/icons-material/Logout';
 import PhonelinkLock from '@mui/icons-material/PhonelinkLock';
 import Settings from '@mui/icons-material/Settings';
 import Storage from '@mui/icons-material/Storage';
+import SwitchAccount from '@mui/icons-material/SwitchAccount';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -16,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import React, { FC, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useHousehold } from 'apps/profiles/api/profiles';
 import { appHost } from 'components/apphost';
 import { AppFeature } from 'constants/appFeature';
 import { useApi } from 'hooks/useApi';
@@ -37,6 +39,8 @@ const AppUserMenu: FC<AppUserMenuProps> = ({
 }) => {
     const { user } = useApi();
     const { data: isQuickConnectEnabled } = useQuickConnectEnabled();
+    // Only present when the server has the JellyFlix Profiles plugin.
+    const { data: household } = useHousehold();
 
     const onDownloadManagerClick = useCallback(() => {
         shell.openDownloadManager();
@@ -79,6 +83,20 @@ const AppUserMenu: FC<AppUserMenuProps> = ({
             open={open}
             onClose={onMenuClose}
         >
+            {household && (
+                <MenuItem
+                    component={Link}
+                    to='/profiles'
+                    onClick={onMenuClose}
+                >
+                    <ListItemIcon>
+                        <SwitchAccount />
+                    </ListItemIcon>
+                    <ListItemText>
+                        {globalize.translate('SwitchProfile')}
+                    </ListItemText>
+                </MenuItem>
+            )}
             <MenuItem
                 component={Link}
                 to={`/userprofile?userId=${user?.Id}`}
