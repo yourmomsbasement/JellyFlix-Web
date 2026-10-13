@@ -50,6 +50,22 @@ export const playItem = (item: BaseItemDto) => {
     });
 };
 
+/** Opens a title. Episodes open their show's page at their season, like Netflix. */
 export const openItem = (item: BaseItemDto) => {
+    if (item.Type === BaseItemKind.Episode && item.SeriesId) {
+        const season = item.SeasonId ? `&seasonId=${item.SeasonId}` : '';
+        void appRouter.show(`/title?id=${item.SeriesId}${season}&serverId=${item.ServerId ?? ''}`);
+        return;
+    }
     appRouter.showItem(item);
+};
+
+/** Whether a title has a local or online trailer. */
+export const hasTrailer = (item: BaseItemDto) => !!item.LocalTrailerCount || !!item.RemoteTrailers?.length;
+
+/** Plays a title's trailers. */
+export const playTrailer = (item: BaseItemDto) => {
+    playbackManager.playTrailers(item).catch((err: unknown) => {
+        console.error('[JellyFlix] failed to play trailer', err);
+    });
 };

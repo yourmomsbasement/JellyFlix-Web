@@ -50,3 +50,7 @@ export const getPosterUrl = (api: Api | undefined, item: BaseItemDto, maxWidth =
         ownImage(item, ImageType.Primary) ?? seriesPoster;
     return toUrl(api, ref, maxWidth);
 };
+
+/** An episode's 16:9 still, falling back to its show's backdrop. */
+export const getStillUrl = (api: Api | undefined, item: BaseItemDto, maxWidth = 480) =>
+    toUrl(api, ownImage(item, ImageType.Primary) ?? parentBackdrop(item), maxWidth);

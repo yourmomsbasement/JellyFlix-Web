@@ -12,33 +12,16 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { playbackManager } from 'components/playback/playbackmanager';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
+import { lightPillSx, pillSx, roundIconSx } from '../styles';
 import { getBackdropUrl, getLogoUrl } from '../utils/images';
-import { getMetaParts, openItem, playItem } from '../utils/items';
+import { getMetaParts, hasTrailer, openItem, playItem, playTrailer } from '../utils/items';
 import { GUTTER } from './MediaRow';
 
 const ROTATE_INTERVAL_MS = 12_000;
 const PAGE_BG = '#141414';
-
-const pillSx = {
-    borderRadius: 999,
-    px: { xs: 3, md: 4 },
-    py: { md: 1.1 },
-    fontSize: { xs: '1rem', md: '1.15rem' },
-    fontWeight: 600,
-    boxShadow: 'none'
-};
-
-const hasTrailer = (item: BaseItemDto) => !!item.LocalTrailerCount || !!item.RemoteTrailers?.length;
-
-const playTrailer = (item: BaseItemDto) => {
-    playbackManager.playTrailers(item).catch((err: unknown) => {
-        console.error('[JellyFlix] failed to play trailer', err);
-    });
-};
 
 interface HeroBannerProps {
     items: BaseItemDto[]
@@ -205,14 +188,14 @@ const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
                         <>
                             <Button
                                 onClick={() => playTrailer(item)}
-                                sx={{ ...pillSx, color: '#141414', backgroundColor: '#e5e5e5', '&:hover': { backgroundColor: '#fff' } }}
+                                sx={lightPillSx}
                             >
                                 {globalize.translate('WatchTrailer')}
                             </Button>
                             <IconButton
                                 onClick={() => openItem(item)}
                                 aria-label={globalize.translate('MoreInfo')}
-                                sx={{ color: '#fff', border: '2px solid rgba(255, 255, 255, 0.6)', '&:hover': { borderColor: '#fff' } }}
+                                sx={roundIconSx}
                             >
                                 <InfoOutlined />
                             </IconButton>
@@ -221,7 +204,7 @@ const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
                         <Button
                             startIcon={<InfoOutlined />}
                             onClick={() => openItem(item)}
-                            sx={{ ...pillSx, color: '#141414', backgroundColor: '#e5e5e5', '&:hover': { backgroundColor: '#fff' } }}
+                            sx={lightPillSx}
                         >
                             {globalize.translate('MoreInfo')}
                         </Button>

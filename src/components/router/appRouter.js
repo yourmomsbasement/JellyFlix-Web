@@ -477,6 +477,18 @@ class AppRouter {
             }
         }
 
+        // JellyFlix: movies and shows open the Netflix-style title page in the modern layout.
+        // `options.classic` keeps the full details page (editing, downloads, media info, ...) reachable.
+        if (layoutManager.modern && !options.classic) {
+            if (itemType === 'Movie' || itemType === 'Series') {
+                return '#/title?id=' + id + '&serverId=' + serverId;
+            }
+
+            if (itemType === 'Season' && item.SeriesId) {
+                return '#/title?id=' + item.SeriesId + '&seasonId=' + id + '&serverId=' + serverId;
+            }
+        }
+
         const itemTypes = ['Playlist', 'TvChannel', 'Program', 'BoxSet', 'MusicAlbum', 'MusicGenre', 'Person', 'Recording', 'MusicArtist'];
 
         if (itemTypes.indexOf(itemType) >= 0) {

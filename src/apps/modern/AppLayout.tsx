@@ -23,8 +23,8 @@ export const Component = () => {
     const { user } = useApi();
     const location = useLocation();
     const [ searchParams ] = useSearchParams();
-    // The home page hero runs underneath the app bar, Netflix-style
-    const isHeroPage = location.pathname === '/home' && searchParams.get('tab') !== '1';
+    // The home and title page heroes run underneath the app bar, Netflix-style
+    const isHeroPage = (location.pathname === '/home' && searchParams.get('tab') !== '1') || location.pathname === '/title';
 
     const isMediumScreen = useMediaQuery((t: Theme) => t.breakpoints.up('md'));
     const isDrawerAvailable = isDrawerPath(location.pathname) && Boolean(user) && !isMediumScreen;

@@ -29,6 +29,7 @@ import {
 import HeroBanner from '../features/home/components/HeroBanner';
 import MediaCard from '../features/home/components/MediaCard';
 import MediaRow, { GUTTER } from '../features/home/components/MediaRow';
+import { useRecommendations } from '../features/recommendations/api/useRecommendations';
 
 /** Space for the app bar on pages without a hero underneath it. */
 const APP_BAR_OFFSET = '72px';
@@ -49,6 +50,7 @@ const Browse: FC = () => {
     const profileName = household?.Profiles.find(p => p.Id === household.CurrentProfileId)?.Name ?? user?.Name;
 
     const hero = useHeroItems();
+    const recommendations = useRecommendations();
     const resume = useContinueWatching();
     const nextUp = useNextUp();
     const myList = useMyList();
@@ -59,7 +61,19 @@ const Browse: FC = () => {
     const { data: views, isPending: isViewsPending } = useUserViews();
 
     const libraries = views?.Items?.filter(view => ROW_COLLECTION_TYPES.includes(view.CollectionType as CollectionType | undefined)) ?? [];
-    const hasHero = !!hero.data?.length;
+    // With history, feature the profile's top picks (Netflix's hero is personalized); otherwise random titles.
+    // Wait for recommendations before choosing so the hero doesn't swap titles a moment after loading.
+    const recs = recommendations.data;
+    const topPicks = recs?.Recommended.map(r => r.Item) ?? [];
+    const personalizedHero = recs?.IsPersonalized ? topPicks.filter(item => !!item.BackdropImageTags?.length).slice(0, 5) : [];
+    const heroItems = personalizedHero.length ? personalizedHero : hero.data ?? [];
+    const isHeroPending = recommendations.isPending || hero.isPending;
+    const hasHero = !isHeroPending && heroItems.length > 0;
+    const seedRows = recs?.BecauseYouWatched ?? [];
+    const seedRow = (index: number) => {
+        const row = seedRows[index];
+        return row && <MediaRow key={row.SeedId} title={globalize.translate('BecauseYouWatched', row.SeedName)} items={row.Items} />;
+    };
 
     if (!isViewsPending && !hero.isPending && !newlyAdded.isPending && !newlyAdded.data?.length && !libraries.length && !hasHero) {
         return (
@@ -71,7 +85,8 @@ const Browse: FC = () => {
 
     return (
         <>
-            {hasHero ? <HeroBanner items={hero.data!} /> : <Box sx={{ height: APP_BAR_OFFSET }} />}
+            {hasHero && <HeroBanner items={heroItems} />}
+            {!hasHero && <Box sx={{ height: isHeroPending ? { xs: '72vh', md: '74vh' } : APP_BAR_OFFSET }} />}
 
             {/* The first rows slide up over the bottom of the hero, like Netflix */}
             <Box sx={{ position: 'relative', zIndex: 1, mt: hasHero ? { xs: '-6vh', md: '-16vh' } : 0, pb: 6 }}>
@@ -82,12 +97,20 @@ const Browse: FC = () => {
                     primaryAction='play'
                 />
                 <MediaRow title={globalize.translate('NextUp')} items={nextUp.data} isPending={nextUp.isPending} />
+                <MediaRow
+                    title={recs?.IsPersonalized && profileName ? globalize.translate('TopPicksFor', profileName) : globalize.translate('TopPicks')}
+                    items={topPicks}
+                    isPending={recommendations.isPending}
+                />
                 <MediaRow title={globalize.translate('NewOnJellyFlix')} items={newlyAdded.data} isPending={newlyAdded.isPending} />
                 <MediaRow title={globalize.translate('MyList')} items={myList.data} isPending={myList.isPending} />
                 <MediaRow title={globalize.translate('TopRated')} items={topRated.data} isPending={topRated.isPending} />
-                {genres?.slice(0, 3).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
+                {seedRow(0)}
+                {genres?.slice(0, 2).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
+                {seedRow(1)}
+                {genres?.slice(2, 4).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
                 <MediaRow title={globalize.translate('WatchItAgain')} items={watchAgain.data} isPending={watchAgain.isPending} />
-                {genres?.slice(3).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
+                {genres?.slice(4).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
                 {libraries.map(library => <LatestRow key={library.Id} library={library} />)}
             </Box>
         </>
