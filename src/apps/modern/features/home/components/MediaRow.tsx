@@ -7,6 +7,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import React, { type FC, useCallback, useEffect, useRef, useState } from 'react';
 
+import type { WatchAction } from '../api/useWatchActions';
 import MediaCard from './MediaCard';
 
 /** Page side gutter, matching Netflix's 4%. */
@@ -25,6 +26,8 @@ interface MediaRowProps {
     items?: BaseItemDto[]
     isPending?: boolean
     primaryAction?: 'open' | 'play'
+    /** Passed to every tile: options for its "⋮" menu. */
+    watchActions?: WatchAction[]
 }
 
 const ScrollButton: FC<{ direction: 'left' | 'right', onClick: () => void, hidden: boolean }> = ({ direction, onClick, hidden }) => (
@@ -57,7 +60,7 @@ const ScrollButton: FC<{ direction: 'left' | 'right', onClick: () => void, hidde
 );
 
 /** A titled, horizontally scrolling row of tiles. Renders nothing once loaded if it has no items. */
-const MediaRow: FC<MediaRowProps> = ({ title, items, isPending = false, primaryAction }) => {
+const MediaRow: FC<MediaRowProps> = ({ title, items, isPending = false, primaryAction, watchActions }) => {
     const scrollerRef = useRef<HTMLDivElement>(null);
     const [ canScrollLeft, setCanScrollLeft ] = useState(false);
     const [ canScrollRight, setCanScrollRight ] = useState(false);
@@ -124,7 +127,7 @@ const MediaRow: FC<MediaRowProps> = ({ title, items, isPending = false, primaryA
                     ) : (
                         items?.map(item => (
                             <Box key={item.Id} sx={{ flex: '0 0 auto', width: tileWidthSx, scrollSnapAlign: 'start' }}>
-                                <MediaCard item={item} primaryAction={primaryAction} />
+                                <MediaCard item={item} primaryAction={primaryAction} watchActions={watchActions} />
                             </Box>
                         ))
                     )}

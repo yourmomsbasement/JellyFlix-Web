@@ -2000,5 +2000,11 @@
     "ThisMovieIs": "This movie is",
     "ThisShowIs": "This show is",
     "TopPicksFor": "Top Picks for {0}",
-    "TopPicks": "Top Picks"
+    "TopPicks": "Top Picks",
+    "MarkAsWatched": "Mark as watched",
+    "MarkShowAsWatched": "Mark whole show as watched",
+    "MarkedAsWatched": "Marked as watched",
+    "MarkedShowAsWatched": "Marked the whole show as watched",
+    "RemoveFromContinueWatching": "Remove from Continue Watching",
+    "RemovedFromContinueWatching": "Removed from Continue Watching"
 }

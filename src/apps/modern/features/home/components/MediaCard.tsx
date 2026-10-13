@@ -10,17 +10,21 @@ import React, { type FC, type MouseEvent, useCallback } from 'react';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
+import type { WatchAction } from '../api/useWatchActions';
 import { getPosterUrl } from '../utils/images';
 import { getDisplayTitle, getEpisodeLabel, getMetaParts, getPlayedPercentage, openItem, playItem } from '../utils/items';
+import WatchMenu from './WatchMenu';
 
 interface MediaCardProps {
     item: BaseItemDto
     /** What clicking the tile does. Continue Watching tiles resume playback, like Netflix. */
     primaryAction?: 'open' | 'play'
+    /** Housekeeping options in the tile's "⋮" menu, e.g. "Mark as watched" in Continue Watching. */
+    watchActions?: WatchAction[]
 }
 
 /** A 2:3 poster tile. It grows on hover and reveals a play button and the title details. */
-const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
+const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open', watchActions }) => {
     const { api } = useApi();
     const posterUrl = getPosterUrl(api, item);
     const title = getDisplayTitle(item);
@@ -48,7 +52,7 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
                     '&:hover, &:focus-within': {
                         transform: 'scale(1.08)',
                         zIndex: 2,
-                        '& .mediaCard-details': { opacity: 1 }
+                        '& .mediaCard-details, & .mediaCard-menu': { opacity: 1 }
                     }
                 }
             }}
@@ -155,6 +159,8 @@ const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open' }) => {
             >
                 <PlayArrow />
             </IconButton>
+
+            {watchActions && <WatchMenu item={item} actions={watchActions} />}
 
             {progress > 0 && (
                 <LinearProgress

@@ -95,8 +95,14 @@ const Browse: FC = () => {
                     items={resume.data}
                     isPending={resume.isPending}
                     primaryAction='play'
+                    watchActions={[ 'markWatched', 'markShowWatched', 'removeFromContinueWatching' ]}
                 />
-                <MediaRow title={globalize.translate('NextUp')} items={nextUp.data} isPending={nextUp.isPending} />
+                <MediaRow
+                    title={globalize.translate('NextUp')}
+                    items={nextUp.data}
+                    isPending={nextUp.isPending}
+                    watchActions={[ 'markWatched', 'markShowWatched' ]}
+                />
                 <MediaRow
                     title={recs?.IsPersonalized && profileName ? globalize.translate('TopPicksFor', profileName) : globalize.translate('TopPicks')}
                     items={topPicks}
