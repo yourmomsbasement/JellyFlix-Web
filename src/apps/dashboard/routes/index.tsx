@@ -22,6 +22,7 @@ import RunningTasksWidget from '../components/widgets/RunningTasksWidget';
 import DevicesWidget from '../components/widgets/DevicesWidget';
 import { useStartTask } from '../features/tasks/api/useStartTask';
 import ItemCountsWidget from '../components/widgets/ItemCountsWidget';
+import JellyFlixWidget from '../components/widgets/JellyFlixWidget';
 
 export const Component = () => {
     const { api } = useApi();
@@ -115,6 +116,7 @@ export const Component = () => {
                                 onShutdownClick={promptShutdown}
                                 isScanning={librariesTask?.State !== TaskState.Idle}
                             />
+                            <JellyFlixWidget />
                             <ItemCountsWidget />
                             <RunningTasksWidget tasks={tasks} />
                             <DevicesWidget />

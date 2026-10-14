@@ -3,19 +3,40 @@ import { buildCustomColorScheme } from 'themes/utils';
 /** The "JellyFlix" color scheme: Netflix-style near-black with a red accent. */
 const theme = buildCustomColorScheme({
     palette: {
+        // The channels are spelled out: the scheme is merged over MUI's dark one, whose precomputed (blue) channels
+        // would otherwise tint selected and hovered items
         primary: {
             main: '#e50914',
+            mainChannel: '229 9 20',
             dark: '#b20710',
+            darkChannel: '178 7 16',
             light: '#f6121d',
-            contrastText: '#fff'
+            lightChannel: '246 18 29',
+            contrastText: '#fff',
+            contrastTextChannel: '255 255 255'
         },
         secondary: {
             main: '#e50914',
-            contrastText: '#fff'
+            mainChannel: '229 9 20',
+            contrastText: '#fff',
+            contrastTextChannel: '255 255 255'
+        },
+        // Netflix keeps everything that isn't red neutral
+        info: {
+            main: '#6d6d6e',
+            mainChannel: '109 109 110',
+            contrastText: '#fff',
+            contrastTextChannel: '255 255 255'
+        },
+        success: {
+            main: '#46d369',
+            mainChannel: '70 211 105'
         },
         background: {
             default: '#141414',
-            paper: '#181818'
+            defaultChannel: '20 20 20',
+            paper: '#181818',
+            paperChannel: '24 24 24'
         },
         text: {
             primary: '#fff',
