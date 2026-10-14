@@ -17,6 +17,11 @@ import {
     useTopRated,
     useWatchAgain
 } from 'apps/modern/features/home/api/useHomeData';
+import { useAppearance } from 'apps/modern/features/appearance/api/useAppearance';
+import { accentVars } from 'apps/modern/features/appearance/components/AccentScope';
+import SeasonalDecor from 'apps/modern/features/appearance/components/SeasonalDecor';
+import SeasonalRows from 'apps/modern/features/appearance/components/SeasonalRows';
+import { getSeasonAccent } from 'apps/modern/features/appearance/seasons';
 import { useRecommendations } from 'apps/modern/features/recommendations/api/useRecommendations';
 import { useHousehold } from 'apps/profiles/api/profiles';
 import { clearBackdrop } from 'components/backdrop/backdrop';
@@ -80,6 +85,8 @@ const TvHome: FC = () => {
     const watchAgain = useWatchAgain();
     const { data: genres } = useTopGenres();
     const { data: views } = useUserViews();
+    const { data: appearance } = useAppearance();
+    const seasonAccent = getSeasonAccent(appearance?.Season);
     const libraries = views?.Items?.filter(view => ROW_COLLECTION_TYPES.includes(view.CollectionType as CollectionType | undefined)) ?? [];
 
     const recs = recommendations.data;
@@ -109,10 +116,11 @@ const TvHome: FC = () => {
 
     return (
         <Page id='tvHomePage' className='mainAnimatedPage' isBackButtonEnabled={false}>
-            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff' }}>
+            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff', ...(seasonAccent && accentVars(seasonAccent)) }}>
                 <TvRail current='home' />
 
                 <TvBillboard item={billboard ?? focused ?? hero.data?.[0]} />
+                <SeasonalDecor season={appearance?.Season} height='40vw' />
 
                 {isLoading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}
 
@@ -130,6 +138,7 @@ const TvHome: FC = () => {
                             items={topPicks}
                             onFocusItem={setFocused}
                         />
+                        <SeasonalRows shelves={appearance?.Shelves} renderRow={(title, shelf) => <PosterRow title={title} items={shelf.Items} onFocusItem={setFocused} />} />
                         <PosterRow title={globalize.translate('NewOnJellyFlix')} items={newlyAdded.data} onFocusItem={setFocused} />
                         <PosterRow title={globalize.translate('MyList')} items={myList.data} onFocusItem={setFocused} />
                         <PosterRow title={globalize.translate('TopRated')} items={topRated.data} onFocusItem={setFocused} />

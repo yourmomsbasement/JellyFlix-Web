@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import React, { type FC, type ReactNode, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useDynamicAccent } from 'apps/modern/features/appearance/api/useAppearance';
+import AccentScope from 'apps/modern/features/appearance/components/AccentScope';
 import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { clearBackdrop } from 'components/backdrop/backdrop';
 import Page from 'components/Page';
@@ -129,6 +131,7 @@ const CompanionPage: FC = () => {
     const { data: item, isPending } = useTitle(itemId);
     const { data: companion } = useCompanion(itemId);
     const { data: similar } = useSimilar(itemId);
+    const accent = useDynamicAccent(companion?.NextInCollection ?? item);
 
     useEffect(() => {
         clearBackdrop();
@@ -141,7 +144,7 @@ const CompanionPage: FC = () => {
         <Page id='companionPage' className='mainAnimatedPage' isBackButtonEnabled>
             {isPending && <Box sx={{ display: 'flex', justifyContent: 'center', pt: '30vh' }}><CircularProgress /></Box>}
             {item && (
-                <Box sx={{ position: 'relative', minHeight: '100vh' }}>
+                <AccentScope accent={accent} sx={{ minHeight: '100vh' }}>
                     {/* The finished film, faded behind everything */}
                     <Box
                         aria-hidden
@@ -192,7 +195,7 @@ const CompanionPage: FC = () => {
                             </Box>
                         )}
                     </Box>
-                </Box>
+                </AccentScope>
             )}
         </Page>
     );

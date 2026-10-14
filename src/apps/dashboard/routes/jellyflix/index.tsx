@@ -17,6 +17,7 @@ import {
     useWebUpdateStatus,
     type WebUpdateStatus
 } from 'apps/dashboard/features/jellyflix/api/useJellyFlix';
+import AppearanceSettings from 'apps/dashboard/features/jellyflix/components/AppearanceSettings';
 import SearchSettings from 'apps/dashboard/features/jellyflix/components/SearchSettings';
 import { Check, ResultPanel, Section } from 'apps/dashboard/features/jellyflix/components/SettingsParts';
 import { getRequestError } from 'apps/legacy/features/search/api/useRequests';
@@ -175,6 +176,8 @@ export const Component: FC = () => {
                             </Section>
 
                             <Section title={globalize.translate('HeaderRecommendations')} description={globalize.translate('JellyFlixRecommendationsHelp')} />
+
+                            <AppearanceSettings configuration={configuration} update={update} />
 
                             <Section title={globalize.translate('HeaderRequests')} description={globalize.translate('JellyFlixRequestsHelp')}>
                                 {configuration.RequestsEnabled === undefined ? (

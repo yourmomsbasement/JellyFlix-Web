@@ -27,6 +27,9 @@ export interface JellyFlixConfiguration {
     EmbeddingsUrl?: string
     EmbeddingsModel?: string
     EmbeddingsApiKey?: string
+    /** The appearance settings are missing before plugin 1.3.0. */
+    SeasonalTheme?: 'Auto' | 'Off' | 'Halloween' | 'Christmas' | 'Summer'
+    DynamicColors?: boolean
 }
 
 /** The state of description search. */

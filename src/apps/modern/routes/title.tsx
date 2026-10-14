@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import React, { type FC, type ReactNode, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useDynamicAccent } from 'apps/modern/features/appearance/api/useAppearance';
+import AccentScope from 'apps/modern/features/appearance/components/AccentScope';
 import { clearBackdrop } from 'components/backdrop/backdrop';
 import Page from 'components/Page';
 import globalize from 'lib/globalize';
@@ -48,6 +50,7 @@ const Title: FC = () => {
     const { data: playTarget } = usePlayTarget(item);
     const { data: seasons } = useSeasons(item);
     const { data: similar } = useSimilar(itemId);
+    const accent = useDynamicAccent(item);
 
     const isSeries = item?.Type === BaseItemKind.Series;
     // A show has no file of its own: describe the episode Play would start
@@ -93,7 +96,8 @@ const Title: FC = () => {
             )}
 
             {item && people && (
-                <>
+                // The title's own colors, taken from its artwork
+                <AccentScope accent={accent} glow='170vh'>
                     <TitleHero item={item} playTarget={playTarget} match={similar?.Match} badges={getQualityBadges(mediaItem)} />
 
                     <Box sx={{ px: GUTTER, pb: 8, position: 'relative', zIndex: 1 }}>
@@ -173,7 +177,7 @@ const Title: FC = () => {
                             episodeLabel={isSeries && mediaItem ? getEpisodeLabel(mediaItem) : undefined}
                         />
                     </Box>
-                </>
+                </AccentScope>
             )}
         </Page>
     );

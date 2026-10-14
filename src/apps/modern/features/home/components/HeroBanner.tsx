@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { type FC, useEffect, useState } from 'react';
 
+import { useAppearance, useDynamicAccent } from 'apps/modern/features/appearance/api/useAppearance';
+import { accentVars } from 'apps/modern/features/appearance/components/AccentScope';
 import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
@@ -46,6 +48,8 @@ const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
     }, [ items.length, isPaused, prefersReducedMotion ]);
 
     const item = items[index % items.length];
+    const { data: appearance } = useAppearance();
+    const dynamicAccent = useDynamicAccent(appearance?.Season === 'None' ? item : undefined);
     if (!item) return null;
 
     const logoUrl = getLogoUrl(api, item);
@@ -68,7 +72,9 @@ const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
                 maxHeight: 820,
                 minHeight: 460,
                 overflow: 'hidden',
-                backgroundColor: PAGE_BG
+                backgroundColor: PAGE_BG,
+                // Out of season, buttons and highlights take the featured title's color
+                ...(dynamicAccent && accentVars(dynamicAccent))
             }}
         >
             {/* Every backdrop stays mounted so switching cross-fades instead of flashing */}

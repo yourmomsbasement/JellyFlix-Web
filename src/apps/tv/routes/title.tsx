@@ -16,6 +16,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import React, { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useDynamicAccent } from 'apps/modern/features/appearance/api/useAppearance';
+import { accentVars } from 'apps/modern/features/appearance/components/AccentScope';
 import { useWatchActions } from 'apps/modern/features/home/api/useWatchActions';
 import { getStillUrl } from 'apps/modern/features/home/utils/images';
 import { getPlayedPercentage, hasTrailer, playItem, playTrailer } from 'apps/modern/features/home/utils/items';
@@ -144,6 +146,7 @@ const TvTitle: FC<{ itemId: string | undefined }> = ({ itemId }) => {
     const { data: seasons } = useSeasons(item);
     const { data: similar } = useSimilar(itemId);
     const actions = useTitleActions(item);
+    const accent = useDynamicAccent(item);
     const watchActions = useWatchActions();
 
     const isSeries = item?.Type === BaseItemKind.Series;
@@ -184,7 +187,9 @@ const TvTitle: FC<{ itemId: string | undefined }> = ({ itemId }) => {
 
     return (
         <Page id='tvTitlePage' className='mainAnimatedPage' isBackButtonEnabled>
-            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff' }}>
+            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff', ...(accent && accentVars(accent)) }}>
+                {/* A soft glow of the title's color behind the rows */}
+                {accent && <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(70% 50% at 30% 85%, rgb(var(--jf-accent-channel) / 0.22), transparent 70%)' }} />}
                 {/* For the Magic Remote pointer; the remote's Back key does the same */}
                 <Box
                     component='button'

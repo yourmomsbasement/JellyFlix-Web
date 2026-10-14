@@ -41,6 +41,31 @@ A full-bleed hero picked from your Top Picks, then rows of 2:3 posters: Continue
 *Remove from Continue Watching*), Next Up, Top Picks, New on JellyFlix, My List, Top Rated, *Because you watched…*,
 genres and Watch It Again.
 
+### Seasonal home pages
+
+In October the home page turns Halloween: pumpkin-orange buttons and progress bars, bats against a harvest moon,
+jack-o'-lanterns, and curated **Halloween Picks**, **Not Too Scary: Family Frights** and **Scream-Worthy Horror**
+shelves. December brings falling snow, twinkling string lights, holly red and **Holiday Favorites**; summer brings a
+slow-turning sun, ocean teal and **Summer Vibes**. Shelves come from the library's own plots, taglines, tags and genres,
+only include titles the profile may see, and are left out when the library doesn't have enough for one. Seasons follow
+the calendar or can be forced or turned off in the JellyFlix settings. Decorations never get in the way of clicks and
+stand still when the device asks for reduced motion. TV mode gets them too.
+
+<p align="center">
+<img alt="Halloween" src="docs/screenshots/home-halloween.jpg" width="32%"/>
+<img alt="Christmas" src="docs/screenshots/home-christmas.jpg" width="32%"/>
+<img alt="Summer" src="docs/screenshots/home-summer.jpg" width="32%"/>
+</p>
+
+### Dynamic colors
+
+Title pages take a subtle accent from the title's artwork: the Play button, progress bars and highlights turn the
+film's color, with a soft glow of it behind the page. The color is toned down until white text on it stays readable
+(WCAG AA), and grey artwork keeps JellyFlix red. Out of season, the home page's hero does the same for the featured
+title. It works in TV mode and on the end-credit companion, and can be turned off in the JellyFlix settings.
+
+<p align="center"><img alt="Dynamic colors" src="docs/screenshots/title-dynamic.jpg" width="70%"/></p>
+
 ### Title pages
 
 Backdrop and title art, match percentage, Play/Resume that picks up the right episode, trailers, My List, thumbs up and
@@ -110,6 +135,7 @@ A **JellyFlix** section in the side menu opens a settings page built from the da
 
 - **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
 - **Requests**: Seerr's address and API key, kids profiles' access, and **Save and test connection**.
+- **Appearance**: the seasonal home page (automatic, off, or a season) and dynamic colors.
 - **Search**: how many titles are searchable by description, semantic search with an embeddings API's address, model
   and key, **Save and test connection**, and **Build search index now** with a progress bar.
 - **Web client**: the installed and latest version, whether the plugin serves it, automatic updates, and
@@ -141,8 +167,8 @@ That's all. The plugin downloads the newest JellyFlix web client built for your 
 the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
-Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, and avatar
-icons and photos need 1.2.1; without it the
+Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, avatar
+icons and photos need 1.2.1, and seasonal themes and dynamic colors need 1.3.0; without it the
 client simply leaves them out. Some settings need a recent plugin too; the settings page says so when the installed
 plugin is too old. Update JellyFlix in
 **Dashboard → Plugins** and restart Jellyfin.
@@ -199,6 +225,7 @@ Where the code lives:
 | `src/themes/jellyflix/dashboard.ts` | The modern dashboard look |
 | `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |
 | `src/apps/legacy/features/search/components/DescriptionResults.tsx` | Matches your description row |
+| `src/apps/modern/features/appearance` | Seasonal decorations, accent colors from artwork |
 | `src/apps/modern/features/artwork` | Change artwork dialog and per-profile artwork |
 | `src/apps/modern/features/companion`, `routes/companion.tsx`, `src/apps/tv/routes/companion.tsx` | End-credit companion |
 | `src/themes/jellyflix` | The JellyFlix theme |

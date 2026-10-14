@@ -6,6 +6,11 @@ import Typography from '@mui/material/Typography';
 import React, { type FC, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useAppearance } from 'apps/modern/features/appearance/api/useAppearance';
+import AccentScope from 'apps/modern/features/appearance/components/AccentScope';
+import SeasonalDecor from 'apps/modern/features/appearance/components/SeasonalDecor';
+import SeasonalRows from 'apps/modern/features/appearance/components/SeasonalRows';
+import { getSeasonAccent } from 'apps/modern/features/appearance/seasons';
 import { useHousehold } from 'apps/profiles/api/profiles';
 import { clearBackdrop } from 'components/backdrop/backdrop';
 import Page from 'components/Page';
@@ -59,6 +64,8 @@ const Browse: FC = () => {
     const watchAgain = useWatchAgain();
     const { data: genres } = useTopGenres();
     const { data: views, isPending: isViewsPending } = useUserViews();
+    const { data: appearance } = useAppearance();
+    const season = appearance?.Season;
 
     const libraries = views?.Items?.filter(view => ROW_COLLECTION_TYPES.includes(view.CollectionType as CollectionType | undefined)) ?? [];
     // With history, feature the profile's top picks (Netflix's hero is personalized); otherwise random titles.
@@ -84,7 +91,9 @@ const Browse: FC = () => {
     }
 
     return (
-        <>
+        // In season, the home page takes the season's accent and artwork
+        <AccentScope accent={getSeasonAccent(season)}>
+            <SeasonalDecor season={season} />
             {hasHero && <HeroBanner items={heroItems} />}
             {!hasHero && <Box sx={{ height: isHeroPending ? { xs: '72vh', md: '74vh' } : APP_BAR_OFFSET }} />}
 
@@ -108,6 +117,7 @@ const Browse: FC = () => {
                     items={topPicks}
                     isPending={recommendations.isPending}
                 />
+                <SeasonalRows shelves={appearance?.Shelves} renderRow={(title, shelf) => <MediaRow title={title} items={shelf.Items} />} />
                 <MediaRow title={globalize.translate('NewOnJellyFlix')} items={newlyAdded.data} isPending={newlyAdded.isPending} />
                 <MediaRow title={globalize.translate('MyList')} items={myList.data} isPending={myList.isPending} />
                 <MediaRow title={globalize.translate('TopRated')} items={topRated.data} isPending={topRated.isPending} />
@@ -119,7 +129,7 @@ const Browse: FC = () => {
                 {genres?.slice(4).map(genre => <GenreRow key={genre.Id} genre={genre} />)}
                 {libraries.map(library => <LatestRow key={library.Id} library={library} />)}
             </Box>
-        </>
+        </AccentScope>
     );
 };
 

@@ -7,6 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import React, { type FC, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useDynamicAccent } from 'apps/modern/features/appearance/api/useAppearance';
+import { accentVars } from 'apps/modern/features/appearance/components/AccentScope';
 import { useCompanion } from 'apps/modern/features/companion/api/useCompanion';
 import { getBackdropUrl, getStillUrl } from 'apps/modern/features/home/utils/images';
 import { openItem, playItem } from 'apps/modern/features/home/utils/items';
@@ -78,6 +80,7 @@ const TvCompanion: FC = () => {
     const { data: companion } = useCompanion(itemId);
     const { data: similar } = useSimilar(itemId);
     const next = companion?.NextInCollection ?? undefined;
+    const accent = useDynamicAccent(next ?? item);
 
     useTvNavigation(rootRef, { memoryKey: itemId && `companion:${itemId}`, stageOffset });
 
@@ -91,7 +94,9 @@ const TvCompanion: FC = () => {
 
     return (
         <Page id='tvCompanionPage' className='mainAnimatedPage' isBackButtonEnabled>
-            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff' }}>
+            <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff', ...(accent && accentVars(accent)) }}>
+                {/* A soft glow of the title's color behind the rows */}
+                {accent && <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(70% 50% at 30% 85%, rgb(var(--jf-accent-channel) / 0.22), transparent 70%)' }} />}
                 {isPending && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}
 
                 {item && (
