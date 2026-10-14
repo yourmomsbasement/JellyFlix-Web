@@ -142,12 +142,17 @@ export const Component: FC = () => {
 
                             <Section title={globalize.translate('HeaderWebClient')} description={status ? getWebClientSummary(status) : ''}>
                                 {status && <StatusTable status={status} />}
-                                <Check
-                                    label={globalize.translate('LabelServeWebClient')}
-                                    help={globalize.translate('ServeWebClientHelp')}
-                                    checked={configuration.ServeWebClient}
-                                    onChange={checked => update({ ServeWebClient: checked })}
-                                />
+                                {configuration.ServeWebClient === undefined ? (
+                                    // Older plugins can't serve the web client, and drop the setting when saved
+                                    <Alert severity='warning'>{globalize.translate('JellyFlixPluginOutdated')}</Alert>
+                                ) : (
+                                    <Check
+                                        label={globalize.translate('LabelServeWebClient')}
+                                        help={globalize.translate(status && status.IsServerUsingInstall && !status.IsServedByPlugin ? 'ServeWebClientWebDirHelp' : 'ServeWebClientHelp')}
+                                        checked={configuration.ServeWebClient}
+                                        onChange={checked => update({ ServeWebClient: checked })}
+                                    />
+                                )}
                                 <Check
                                     label={globalize.translate('LabelWebUpdatesEnabled')}
                                     help={globalize.translate('WebUpdatesEnabledHelp')}

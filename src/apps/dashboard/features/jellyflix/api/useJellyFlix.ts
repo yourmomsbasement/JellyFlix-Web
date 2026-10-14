@@ -13,7 +13,8 @@ export interface JellyFlixConfiguration {
     AllowNonAdminOwners: boolean
     KidsMaxParentalRating: number
     WebUpdatesEnabled: boolean
-    ServeWebClient: boolean
+    /** Missing before plugin 1.0.1. */
+    ServeWebClient?: boolean
     WebReleasesRepository: string
     GitHubApiUrl: string
 }

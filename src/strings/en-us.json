@@ -2039,5 +2039,7 @@
     "JellyFlixSummaryProfiles": "Up to {0} profiles per household",
     "HeaderProfiles": "Profiles",
     "HeaderRecommendations": "Recommendations",
-    "JellyFlixSettingsNotKept": "The server didn't keep these settings: {0}. Make sure the JellyFlix plugin is up to date and restart Jellyfin."
+    "JellyFlixSettingsNotKept": "The server didn't keep these settings: {0}. Make sure the JellyFlix plugin is up to date and restart Jellyfin.",
+    "JellyFlixPluginOutdated": "This server runs an older JellyFlix plugin that can't serve the web client itself, so this setting can't be saved. Update JellyFlix in Dashboard → Plugins (or install it again from the catalog) and restart Jellyfin.",
+    "ServeWebClientWebDirHelp": "Jellyfin's own web folder (--webdir or JELLYFIN_WEB_DIR) points at the JellyFlix install folder, so turning this off changes nothing. Remove that setting and restart Jellyfin to let the plugin serve the web client."
 }
