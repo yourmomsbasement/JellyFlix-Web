@@ -160,7 +160,7 @@ export const Component: FC = () => {
                 inset: 0,
                 zIndex: 1200,
                 overflowY: 'auto',
-                backgroundColor: '#141414',
+                backgroundColor: 'background.default',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -170,7 +170,7 @@ export const Component: FC = () => {
                 textAlign: 'center'
             }}
         >
-            {(isPending || isSwitching) && <CircularProgress sx={{ color: '#e50914' }} />}
+            {(isPending || isSwitching) && <CircularProgress color='primary' />}
 
             {error && !isPluginMissing(error) && (
                 <Alert severity='error'>{globalize.translate('ErrorDefault')}</Alert>
@@ -240,7 +240,7 @@ export const Component: FC = () => {
                         <Button
                             variant='contained'
                             onClick={() => setManaging(false)}
-                            sx={{ backgroundColor: '#fff', color: '#141414', fontWeight: 700, px: 4, '&:hover': { backgroundColor: '#e50914', color: '#fff' } }}
+                            sx={{ backgroundColor: '#fff', color: '#141414', fontWeight: 700, px: 4, '&:hover': { backgroundColor: 'primary.main', color: 'primary.contrastText' } }}
                         >
                             {globalize.translate('Done')}
                         </Button>

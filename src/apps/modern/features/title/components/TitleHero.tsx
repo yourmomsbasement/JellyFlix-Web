@@ -83,7 +83,7 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] })
                 maxHeight: 820,
                 minHeight: 520,
                 overflow: 'hidden',
-                backgroundColor: '#141414'
+                backgroundColor: 'var(--jf-palette-background-default)'
             }}
         >
             <Box
@@ -102,8 +102,8 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] })
                     position: 'absolute',
                     inset: 0,
                     background: {
-                        xs: 'linear-gradient(0deg, #141414 10%, rgba(20, 20, 20, 0.85) 40%, rgba(20, 20, 20, 0.25) 75%, rgba(20, 20, 20, 0.4) 100%)',
-                        md: 'linear-gradient(90deg, rgba(20, 20, 20, 0.95) 0%, rgba(20, 20, 20, 0.7) 30%, transparent 60%), linear-gradient(0deg, #141414 0%, rgba(20, 20, 20, 0.6) 15%, transparent 40%)'
+                        xs: 'linear-gradient(0deg, var(--jf-palette-background-default) 10%, rgb(var(--jf-palette-background-defaultChannel) / 0.85) 40%, rgb(var(--jf-palette-background-defaultChannel) / 0.25) 75%, rgb(var(--jf-palette-background-defaultChannel) / 0.4) 100%)',
+                        md: 'linear-gradient(90deg, rgb(var(--jf-palette-background-defaultChannel) / 0.95) 0%, rgb(var(--jf-palette-background-defaultChannel) / 0.7) 30%, transparent 60%), linear-gradient(0deg, var(--jf-palette-background-default) 0%, rgb(var(--jf-palette-background-defaultChannel) / 0.6) 15%, transparent 40%)'
                     }
                 }}
             />

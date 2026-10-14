@@ -49,7 +49,7 @@ const EpisodeRow: FC<{ episode: BaseItemDto, isCurrent: boolean }> = ({ episode,
                 textAlign: 'left',
                 borderRadius: 1,
                 borderBottom: '1px solid #404040',
-                backgroundColor: isCurrent ? '#333' : 'transparent',
+                backgroundColor: isCurrent ? 'var(--jf-palette-FilledInput-bg)' : 'transparent',
                 '&:hover, &.Mui-focusVisible': { backgroundColor: '#2a2a2a', '& .episodeRow-play': { opacity: 1 } }
             }}
         >
@@ -57,7 +57,7 @@ const EpisodeRow: FC<{ episode: BaseItemDto, isCurrent: boolean }> = ({ episode,
                 {episode.IndexNumber}
             </Typography>
 
-            <Box sx={{ position: 'relative', flex: '0 0 auto', width: { xs: 130, md: 200 }, aspectRatio: '16 / 9', borderRadius: 1, overflow: 'hidden', backgroundColor: '#2f2f2f' }}>
+            <Box sx={{ position: 'relative', flex: '0 0 auto', width: { xs: 130, md: 200 }, aspectRatio: '16 / 9', borderRadius: 1, overflow: 'hidden', backgroundColor: 'background.paper' }}>
                 {stillUrl && <Box component='img' src={stillUrl} alt='' loading='lazy' sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                 <Box
                     className='episodeRow-play'

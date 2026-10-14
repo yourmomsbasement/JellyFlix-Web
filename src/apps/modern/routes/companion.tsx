@@ -152,7 +152,7 @@ const CompanionPage: FC = () => {
                             position: 'absolute',
                             inset: '0 0 auto 0',
                             height: '70vh',
-                            backgroundImage: backdrop ? `linear-gradient(to bottom, rgba(20, 20, 20, 0.55), #141414), url("${backdrop}")` : undefined,
+                            backgroundImage: backdrop ? `linear-gradient(to bottom, rgb(var(--jf-palette-background-defaultChannel) / 0.55), var(--jf-palette-background-default)), url("${backdrop}")` : undefined,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center top'
                         }}

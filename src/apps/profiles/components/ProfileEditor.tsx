@@ -202,7 +202,7 @@ const ProfileEditor: FC<ProfileEditorProps> = ({ open, household, profile, onClo
             onClose={onClose}
             fullWidth
             maxWidth='md'
-            slotProps={{ paper: { component: 'form', onSubmit, sx: { backgroundColor: '#141414', backgroundImage: 'none' } } }}
+            slotProps={{ paper: { component: 'form', onSubmit, sx: { backgroundColor: 'background.default', backgroundImage: 'none' } } }}
         >
             <DialogTitle>
                 {globalize.translate(isNew ? 'AddProfile' : 'EditProfile')}

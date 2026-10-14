@@ -115,7 +115,7 @@ const TvRail: FC<TvRailProps> = ({ current }) => {
                 transition: 'width 0.25s ease-out, background 0.25s',
                 '&:focus-within': {
                     width: EXPANDED_WIDTH,
-                    background: `linear-gradient(to right, ${BACKGROUND} 75%, rgba(20, 20, 20, 0.85))`,
+                    background: `linear-gradient(to right, ${BACKGROUND} 75%, rgb(var(--jf-palette-background-defaultChannel) / 0.85))`,
                     boxShadow: '2vw 0 4vw rgba(0, 0, 0, 0.8)',
                     '& .tvRail-label': { opacity: 1 }
                 }

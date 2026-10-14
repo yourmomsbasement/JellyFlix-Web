@@ -24,7 +24,7 @@ import { getMetaParts, hasTrailer, openItem, playItem, playTrailer } from '../ut
 import { GUTTER } from './MediaRow';
 
 const ROTATE_INTERVAL_MS = 12_000;
-const PAGE_BG = '#141414';
+const PAGE_BG = 'var(--jf-palette-background-default)';
 
 interface HeroBannerProps {
     items: BaseItemDto[]
@@ -104,8 +104,8 @@ const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
                     position: 'absolute',
                     inset: 0,
                     background: {
-                        xs: `linear-gradient(0deg, ${PAGE_BG} 8%, rgba(20, 20, 20, 0.85) 35%, rgba(20, 20, 20, 0.2) 70%, rgba(20, 20, 20, 0.35) 100%)`,
-                        md: `linear-gradient(90deg, ${PAGE_BG} 28%, rgba(20, 20, 20, 0.75) 40%, transparent 62%), linear-gradient(0deg, ${PAGE_BG} 0%, rgba(20, 20, 20, 0.75) 18%, rgba(20, 20, 20, 0.3) 36%, transparent 52%)`
+                        xs: `linear-gradient(0deg, ${PAGE_BG} 8%, rgb(var(--jf-palette-background-defaultChannel) / 0.85) 35%, rgb(var(--jf-palette-background-defaultChannel) / 0.2) 70%, rgb(var(--jf-palette-background-defaultChannel) / 0.35) 100%)`,
+                        md: `linear-gradient(90deg, ${PAGE_BG} 28%, rgb(var(--jf-palette-background-defaultChannel) / 0.75) 40%, transparent 62%), linear-gradient(0deg, ${PAGE_BG} 0%, rgb(var(--jf-palette-background-defaultChannel) / 0.75) 18%, rgb(var(--jf-palette-background-defaultChannel) / 0.3) 36%, transparent 52%)`
                     }
                 }}
             />

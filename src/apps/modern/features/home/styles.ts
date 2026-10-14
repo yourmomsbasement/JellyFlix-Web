@@ -27,4 +27,5 @@ export const roundIconSx = {
 };
 
 /** Netflix's "98% Match" green. */
-export const MATCH_GREEN = '#46d369';
+/** The match percentage, in the theme's color for it. */
+export const MATCH_GREEN = 'var(--jf-palette-success-main)';

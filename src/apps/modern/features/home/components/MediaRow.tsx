@@ -47,11 +47,11 @@ const ScrollButton: FC<{ direction: 'left' | 'right', onClick: () => void, hidde
             display: { xs: 'none', md: 'flex' },
             overflow: 'hidden',
             color: '#fff',
-            background: 'rgba(20, 20, 20, 0.5)',
+            background: 'rgb(var(--jf-palette-background-defaultChannel) / 0.5)',
             opacity: 0,
             visibility: hidden ? 'hidden' : 'visible',
             transition: 'opacity 0.2s',
-            '&:hover': { background: 'rgba(20, 20, 20, 0.7)', '& svg': { transform: 'scale(1.25)' } },
+            '&:hover': { background: 'rgb(var(--jf-palette-background-defaultChannel) / 0.7)', '& svg': { transform: 'scale(1.25)' } },
             '@media (hover: none)': { display: 'none' }
         }}
     >

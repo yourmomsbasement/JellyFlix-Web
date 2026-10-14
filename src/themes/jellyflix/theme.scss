@@ -1,112 +1,14 @@
-@use '../_base/theme' with (
-    // Theme options
-    $dark: true,
-
-    // Color palette
-    $background-default: #141414,
-    $background-paper: #181818,
-    $primary-main: #e50914,
-    $primary-dark: #b20710,
-    $primary-light: #f6121d,
-    $primary-hover: rgba(229, 9, 20, 0.2),
-    $primary-contrastText: #fff,
-    $text-primary: #fff,
-    $text-secondary: #b3b3b3,
-    $action-focus: rgba(255, 255, 255, 0.16),
-    $action-hover: rgba(255, 255, 255, 0.1),
-    $divider: rgba(255, 255, 255, 0.1),
-
-    // Components
-    $appBar-defaultBg: #141414,
-    $appBar-transparentBg: transparent,
-    $filledInput-bg: #333,
-    $card-borderRadius: 4px,
-    $alert-infoFilledBg: #333,
-    $alert-infoFilledColor: #fff,
-    $button-inheritContainedBg: rgba(109, 109, 110, 0.7),
-    $button-inheritContainedHoverBg: rgba(109, 109, 110, 0.4),
-    $snackbarContent-bg: #e5e5e5,
-    $snackbarContent-color: #141414
+/* The "Classic Red" JellyFlix theme; colors from themes/jellyflix/palettes.ts */
+@use '../_base/jellyflix' with (
+    $background: #141414,
+    $paper: #181818,
+    $accent: #e50914,
+    $accent-dark: #b20710,
+    $accent-light: #f6121d,
+    $on-accent: #fff,
+    $input: #333,
+    $muted: #b3b3b3,
+    // The original JellyFlix shades
+    $card-backgrounds: (#2f2f2f, #3a1214, #232323, #4a1a1d, #1c1c1c),
+    $dashboard-card-background: #1f1f1f
 );
-
-/* Card background color variants (shown while images load or when an item has none) */
-.defaultCardBackground1 {
-    background-color: #2f2f2f;
-}
-
-.defaultCardBackground2 {
-    background-color: #3a1214;
-}
-
-.defaultCardBackground3 {
-    background-color: #232323;
-}
-
-.defaultCardBackground4 {
-    background-color: #4a1a1d;
-}
-
-.defaultCardBackground5 {
-    background-color: #1c1c1c;
-}
-
-/* Detail ribbon on item details pages */
-.detailRibbon {
-    background: linear-gradient(180deg, rgba(20, 20, 20, 0) 0%, #141414 60%);
-
-    .layout-tv & {
-        background: none;
-    }
-}
-
-/* Dashboard: the same modern look as the dashboard's React pages (see dashboard.ts) for its older HTML pages, such as
-   plugin settings pages */
-.dashboardDocument {
-    .emby-input,
-    .emby-textarea,
-    .emby-select-withcolor {
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        background-color: rgba(255, 255, 255, 0.05);
-        transition: border-color 0.15s, box-shadow 0.15s;
-
-        &:focus {
-            border-color: #e50914;
-            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.25);
-        }
-    }
-
-    .paperList,
-    .verticalSection-extrabottompadding .paperList {
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
-        background-image: none;
-        overflow: hidden;
-    }
-
-    .emby-button.raised,
-    .emby-button.button-flat {
-        border-radius: 8px;
-        font-weight: 600;
-    }
-
-    .sectionTitle {
-        font-weight: 600;
-    }
-
-    /* Plain backgrounds for device and library cards; the reddish poster placeholders are too loud here */
-    .defaultCardBackground1,
-    .defaultCardBackground2,
-    .defaultCardBackground3,
-    .defaultCardBackground4,
-    .defaultCardBackground5 {
-        background-color: #1f1f1f;
-        background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
-    }
-
-    .cardBox:not(.visualCardBox) .cardScalable,
-    .visualCardBox {
-        border-radius: 12px;
-        overflow: hidden;
-    }
-}
