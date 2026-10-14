@@ -82,6 +82,7 @@ export function getDeviceIcon(info: DeviceInfoDto | SessionInfoDto) {
         case 'Finamp':
             return BASE_DEVICE_IMAGE_URL + 'finamp.svg';
         case 'Jellyfin Web':
+        case 'Lanternfish Web':
             return getWebDeviceIcon((info as DeviceInfoDto).Name || (info as SessionInfoDto).DeviceName);
         default:
             if (info.Capabilities?.IconUrl) {
