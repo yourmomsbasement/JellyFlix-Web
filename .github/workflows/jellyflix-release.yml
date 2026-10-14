@@ -1,6 +1,6 @@
-name: JellyFlix web release 🎬
+name: Lanternfish web release 🎬
 
-# Builds the JellyFlix web client and publishes it as a GitHub release. The JellyFlix server plugin's
+# Builds the Lanternfish web client and publishes it as a GitHub release. The JellyFlix server plugin's
 # Web Updater downloads these releases and installs them on the Jellyfin server.
 
 on:
@@ -70,5 +70,5 @@ jobs:
           gh release create "web-${VERSION}" \
             jellyflix-web.zip jellyflix-web.zip.sha256 release.json \
             --target "${GITHUB_SHA}" \
-            --title "JellyFlix web ${VERSION}" \
-            --notes "JellyFlix web client for Jellyfin ${SERVER_VERSION}, built from ${GITHUB_SHA}. Installed automatically by the JellyFlix plugin's Web Updater."
+            --title "Lanternfish web ${VERSION}" \
+            --notes "Lanternfish web client for Jellyfin ${SERVER_VERSION}, built from ${GITHUB_SHA}. Installed automatically by the JellyFlix plugin's Web Updater."

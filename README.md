@@ -41,7 +41,7 @@ avatar; other profiles can change their own.
 ### Home
 
 A full-bleed hero picked from your Top Picks, then rows of 2:3 posters: Continue Watching (with *Mark as watched* and
-*Remove from Continue Watching*), Next Up, Top Picks, New on JellyFlix, My List, Top Rated, *Because you watched…*,
+*Remove from Continue Watching*), Next Up, Top Picks, New on Lanternfish, My List, Top Rated, *Because you watched…*,
 genres and Watch It Again.
 
 ### Seasonal home pages
@@ -51,7 +51,7 @@ jack-o'-lanterns, and curated **Halloween Picks**, **Not Too Scary: Family Frigh
 shelves. December brings falling snow, twinkling string lights, holly red and **Holiday Favorites**; summer brings a
 slow-turning sun, ocean teal and **Summer Vibes**. Shelves come from the library's own plots, taglines, tags and genres,
 only include titles the profile may see, and are left out when the library doesn't have enough for one. Seasons follow
-the calendar or can be forced or turned off in the JellyFlix settings. Decorations never get in the way of clicks and
+the calendar or can be forced or turned off in the JellyFlix plugin settings. Decorations never get in the way of clicks and
 stand still when the device asks for reduced motion. TV mode gets them too.
 
 <p align="center">
@@ -64,8 +64,8 @@ stand still when the device asks for reduced motion. TV mode gets them too.
 
 Title pages take a subtle accent from the title's artwork: the Play button, progress bars and highlights turn the
 film's color, with a soft glow of it behind the page. The color is toned down until white text on it stays readable
-(WCAG AA), and grey artwork keeps JellyFlix red. Out of season, the home page's hero does the same for the featured
-title. It works in TV mode and on the end-credit companion, and can be turned off in the JellyFlix settings.
+(WCAG AA), and grey artwork keeps the theme's own accent. Out of season, the home page's hero does the same for the featured
+title. It works in TV mode and on the end-credit companion, and can be turned off in the JellyFlix plugin settings.
 
 <p align="center"><img alt="Dynamic colors" src="docs/screenshots/title-dynamic.jpg" width="70%"/></p>
 
@@ -80,8 +80,9 @@ bitrate, for each version), and badges such as 4K, HDR, Dolby Vision, 5.1 and At
 
 ### TV mode
 
-Jellyfin's TV apps (LG webOS, Samsung Tizen, Android TV…) load the web client from your server, so they get JellyFlix
-too, with no app to rebuild. In TV layout the home and title pages are rebuilt for the remote: the focused title fills
+Jellyfin's TV apps (LG webOS, Samsung Tizen, Android TV…) load the web client from your server, so they get Lanternfish
+too, with no app to rebuild. The [Lanternfish TV apps](https://github.com/yourmomsbasement/LanternFish-Client) add
+Roku and native touches (remote keys, device detection, server discovery) on top. In TV layout the home and title pages are rebuilt for the remote: the focused title fills
 the top of the screen, rows slide as you move, Left opens the side menu, Back steps back out, the Play key starts the
 focused title, and LG's Magic Remote pointer works.
 
@@ -93,7 +94,7 @@ focused title, and LG's Magic Remote pointer works.
 
 ### Requests
 
-With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) set up in the JellyFlix settings, search
+With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) set up in the JellyFlix plugin settings, search
 also shows a **Not in your library** row: matching movies and shows that the library doesn't have, each with a
 **Request** button. Cards show what's already requested ("Requested"), on its way ("Coming soon") or partly
 available. Requests go through the household owner's Seerr account; kids profiles don't see the row unless allowed. It
@@ -105,7 +106,7 @@ works in TV mode too.
 
 Search also finds titles from what they're about: "space movie with a stranded astronaut" lists matching movies and
 shows in a **Matches your description** row, from their plot, tagline, genres, keywords and cast. With an embeddings API
-(such as Ollama) set up in the JellyFlix settings, it matches by meaning too, so "marooned on another planet" finds the
+(such as Ollama) set up in the JellyFlix plugin settings, it matches by meaning too, so "marooned on another planet" finds the
 same film.
 
 <p align="center"><img alt="Matches your description" src="docs/screenshots/search-description.jpg" width="70%"/></p>
@@ -128,13 +129,19 @@ music library, and More Like This. TV mode has its own version, built for the re
 <img alt="End-credit companion on TV" src="docs/screenshots/tv-companion.jpg" width="49%"/>
 </p>
 
+### Themes
+
+Four color themes, picked per profile in **Settings → Display → Theme**: **Midnight** (the default, periwinkle on
+blue-black), **Ember** (orange), **Aurora** (teal) and **Classic Red**. Home, title pages, TV mode and the dashboard all
+follow the chosen theme; the Lanternfish TV apps use the same palettes.
+
 ### Dashboard
 
-With the JellyFlix theme the admin dashboard gets a cleaner, more modern look: rounded cards with hairline borders,
-rounded inputs with a red focus ring, a side menu of pill-shaped items with the current page in red, and a translucent
-top bar. Older HTML pages, such as plugin settings, get the same treatment.
+The admin dashboard gets a cleaner, more modern look: rounded cards with hairline borders, rounded inputs with a focus
+ring in the theme's accent, a side menu of pill-shaped items with the current page highlighted, and a translucent top
+bar. Older HTML pages, such as plugin settings, get the same treatment.
 
-A **JellyFlix** section in the side menu opens a settings page built from the dashboard's own cards and inputs:
+A **JellyFlix** section in the side menu (the plugin's settings) opens a settings page built from the dashboard's own cards and inputs:
 
 - **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
 - **Requests**: Seerr's address and API key, kids profiles' access, and **Save and test connection**.
@@ -147,7 +154,7 @@ A **JellyFlix** section in the side menu opens a settings page built from the da
 Saving happens from a bar that stays on screen and confirms the result next to the Save button; the page reads the
 settings back from the server and names any it didn't keep. Testing Seerr or the embeddings API, building the search index and checking for updates each open a panel
 underneath with a progress bar and then the outcome: connected (with Seerr's version) or why not, and up to date, a
-new client installed (with **Reload now**) or why the update failed. The dashboard home also gets a JellyFlix card.
+new client installed (with **Reload now**) or why the update failed. The dashboard home also gets a JellyFlix plugin card.
 
 <p align="center">
 <img alt="Dashboard" src="docs/screenshots/dashboard.jpg" width="49%"/>
@@ -160,13 +167,13 @@ new client installed (with **Reload now**) or why the update failed. The dashboa
 
 ## Install
 
-JellyFlix needs **Jellyfin 13** (the `unstable` builds).
+Lanternfish needs **Jellyfin 13** (the `unstable` builds) and the JellyFlix plugin.
 
 1. In Jellyfin, open **Dashboard → Plugins → Repositories** and add
    `https://raw.githubusercontent.com/yourmomsbasement/JellyFlix-Plugin/main/manifest.json`.
 2. Install **JellyFlix** from the catalog and restart Jellyfin.
 
-That's all. The plugin downloads the newest JellyFlix web client built for your Jellyfin version, serves it in place of
+That's all. The plugin downloads the newest Lanternfish web client built for your Jellyfin version, serves it in place of
 the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
@@ -223,7 +230,7 @@ Where the code lives:
 | `src/apps/modern/features/home`, `routes/home.tsx` | Home rows and hero |
 | `src/apps/modern/features/title`, `routes/title.tsx` | Title pages |
 | `src/apps/tv` | TV mode: remote navigation, TV home and title pages |
-| `src/apps/dashboard/features/jellyflix`, `routes/jellyflix` | JellyFlix dashboard settings and home card |
+| `src/apps/dashboard/features/jellyflix`, `routes/jellyflix` | JellyFlix plugin settings and dashboard card |
 | `src/apps/modern/features/title/utils/mediaInfo.ts` | Video & Audio details and quality badges |
 | `src/themes/jellyflix/dashboard.ts` | The modern dashboard look |
 | `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |
@@ -231,7 +238,9 @@ Where the code lives:
 | `src/apps/modern/features/appearance` | Seasonal decorations, accent colors from artwork |
 | `src/apps/modern/features/artwork` | Change artwork dialog and per-profile artwork |
 | `src/apps/modern/features/companion`, `routes/companion.tsx`, `src/apps/tv/routes/companion.tsx` | End-credit companion |
-| `src/themes/jellyflix` | The JellyFlix theme |
+| `src/themes/jellyflix` | The Lanternfish themes: palettes, the shared scheme builder and Classic Red (id `jellyflix`) |
+| `src/themes/midnight`, `ember`, `aurora`, `_base/_jellyflix.scss` | The other themes and their shared stylesheet |
+| `src/assets/img/lanternfish` | Logos and icons, rendered by `scripts/make-icons.sh` in [LanternFish-Client](https://github.com/yourmomsbasement/LanternFish-Client) |
 
-JellyFlix builds on the work of the [Jellyfin project](https://jellyfin.org). Review Jellyfin's
+Lanternfish builds on the work of the [Jellyfin project](https://jellyfin.org). Review Jellyfin's
 [Contributing Guide](./CONTRIBUTING.md) for more on the tech stack.
