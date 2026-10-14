@@ -13,11 +13,11 @@ import {
     useCheckForWebUpdates,
     useJellyFlixConfiguration,
     useSaveJellyFlixConfiguration,
-    useTestSeerr,
     useWebUpdateStatus,
     type WebUpdateStatus
 } from 'apps/dashboard/features/jellyflix/api/useJellyFlix';
 import AppearanceSettings from 'apps/dashboard/features/jellyflix/components/AppearanceSettings';
+import RequestSettings from 'apps/dashboard/features/jellyflix/components/RequestSettings';
 import SearchSettings from 'apps/dashboard/features/jellyflix/components/SearchSettings';
 import { Check, ResultPanel, Section } from 'apps/dashboard/features/jellyflix/components/SettingsParts';
 import { getRequestError } from 'apps/legacy/features/search/api/useRequests';
@@ -33,28 +33,6 @@ const getUpdateOutcome = (result: string | null | undefined): { severity: AlertC
     if (result?.startsWith('Update failed')) return { severity: 'error', title: globalize.translate('WebUpdateFailed') };
     return { severity: 'warning', title: globalize.translate('WebUpdateNothingToInstall') };
 };
-
-const SeerrTestResult: FC<{ test: ReturnType<typeof useTestSeerr>, isRequestsEnabled: boolean }> = ({ test, isRequestsEnabled }) => (
-    <ResultPanel
-        isPending={test.isPending}
-        pendingText={globalize.translate('SeerrTesting')}
-        severity={(test.isSuccess && 'success') || (test.isError && 'error') || undefined}
-        title={globalize.translate(test.isSuccess ? 'SeerrConnectedTitle' : 'SeerrFailedTitle')}
-    >
-        {test.isSuccess && (
-            <>
-                {globalize.translate('SeerrVersion', test.data)}{' '}
-                {globalize.translate(isRequestsEnabled ? 'SeerrConnectedReady' : 'SeerrConnectedTurnOn')}
-            </>
-        )}
-        {test.isError && (
-            <>
-                <Box sx={{ fontWeight: 600 }}>{getRequestError(test.error)}</Box>
-                {globalize.translate('SeerrFailedHelp')}
-            </>
-        )}
-    </ResultPanel>
-);
 
 const UpdateCheckResult: FC<{ check: ReturnType<typeof useCheckForWebUpdates> }> = ({ check }) => {
     const result = check.data?.LastResult;
@@ -114,7 +92,6 @@ export const Component: FC = () => {
     const { data: status } = useWebUpdateStatus();
     const save = useSaveJellyFlixConfiguration();
     const checkForUpdates = useCheckForWebUpdates();
-    const testSeerr = useTestSeerr();
     const [ configuration, setConfiguration ] = useState<JellyFlixConfiguration>();
 
     useEffect(() => {
@@ -179,53 +156,7 @@ export const Component: FC = () => {
 
                             <AppearanceSettings configuration={configuration} update={update} />
 
-                            <Section title={globalize.translate('HeaderRequests')} description={globalize.translate('JellyFlixRequestsHelp')}>
-                                {configuration.RequestsEnabled === undefined ? (
-                                    <Alert severity='warning'>{globalize.translate('JellyFlixRequestsOutdated')}</Alert>
-                                ) : (
-                                    <>
-                                        <Check
-                                            label={globalize.translate('LabelRequestsEnabled')}
-                                            checked={configuration.RequestsEnabled}
-                                            onChange={checked => update({ RequestsEnabled: checked })}
-                                        />
-                                        <TextField
-                                            type='url'
-                                            label={globalize.translate('LabelSeerrUrl')}
-                                            helperText={globalize.translate('SeerrUrlHelp')}
-                                            value={configuration.SeerrUrl ?? ''}
-                                            onChange={e => update({ SeerrUrl: e.target.value.trim() })}
-                                        />
-                                        <TextField
-                                            type='password'
-                                            autoComplete='off'
-                                            label={globalize.translate('LabelSeerrApiKey')}
-                                            helperText={globalize.translate('SeerrApiKeyHelp')}
-                                            value={configuration.SeerrApiKey ?? ''}
-                                            onChange={e => update({ SeerrApiKey: e.target.value.trim() })}
-                                        />
-                                        <Check
-                                            label={globalize.translate('LabelAllowKidsRequests')}
-                                            checked={!!configuration.AllowKidsRequests}
-                                            onChange={checked => update({ AllowKidsRequests: checked })}
-                                        />
-                                        <Box>
-                                            <Button
-                                                variant='outlined'
-                                                disabled={save.isPending || testSeerr.isPending || !configuration.SeerrUrl || !configuration.SeerrApiKey}
-                                                // The test uses the saved settings, so save first
-                                                onClick={() => {
-                                                    testSeerr.reset();
-                                                    save.mutate(configuration, { onSuccess: () => testSeerr.mutate() });
-                                                }}
-                                            >
-                                                {globalize.translate('ButtonTestSeerr')}
-                                            </Button>
-                                        </Box>
-                                        <SeerrTestResult test={testSeerr} isRequestsEnabled={!!configuration.RequestsEnabled} />
-                                    </>
-                                )}
-                            </Section>
+                            <RequestSettings configuration={configuration} update={update} save={save} />
 
                             <SearchSettings configuration={configuration} update={update} save={save} />
 

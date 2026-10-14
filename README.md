@@ -94,11 +94,11 @@ focused title, and LG's Magic Remote pointer works.
 
 ### Requests
 
-With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) set up in the JellyFlix plugin settings, search
-also shows a **Not in your library** row: matching movies and shows that the library doesn't have, each with a
-**Request** button. Cards show what's already requested ("Requested"), on its way ("Coming soon") or partly
-available. Requests go through the household owner's Seerr account; kids profiles don't see the row unless allowed. It
-works in TV mode too.
+With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) or [Ombi](https://ombi.io) set up in the
+JellyFlix plugin settings, search also shows a **Not in your library** row: matching movies and shows that the library
+doesn't have, each with a **Request** button. Cards show what's already requested ("Requested"), on its way ("Coming
+soon") or partly available. Requests go through the household owner's Seerr or Ombi account; kids profiles don't see
+the row unless allowed. It works in TV mode too.
 
 <p align="center"><img alt="Requesting from search" src="docs/screenshots/search-requests.jpg" width="70%"/></p>
 
@@ -144,7 +144,7 @@ bar. Older HTML pages, such as plugin settings, get the same treatment.
 A **JellyFlix** section in the side menu (the plugin's settings) opens a settings page built from the dashboard's own cards and inputs:
 
 - **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
-- **Requests**: Seerr's address and API key, kids profiles' access, and **Save and test connection**.
+- **Requests**: Seerr or Ombi, its address and API key, kids profiles' access, and **Save and test connection**.
 - **Appearance**: the seasonal home page (automatic, off, or a season) and dynamic colors.
 - **Search**: how many titles are searchable by description, semantic search with an embeddings API's address, model
   and key, **Save and test connection**, and **Build search index now** with a progress bar.
@@ -152,9 +152,10 @@ A **JellyFlix** section in the side menu (the plugin's settings) opens a setting
   **Check for updates now**.
 
 Saving happens from a bar that stays on screen and confirms the result next to the Save button; the page reads the
-settings back from the server and names any it didn't keep. Testing Seerr or the embeddings API, building the search index and checking for updates each open a panel
-underneath with a progress bar and then the outcome: connected (with Seerr's version) or why not, and up to date, a
-new client installed (with **Reload now**) or why the update failed. The dashboard home also gets a JellyFlix plugin card.
+settings back from the server and names any it didn't keep. Testing Seerr, Ombi or the embeddings API, building the
+search index and checking for updates each open a panel underneath with a progress bar and then the outcome: connected
+(with Seerr's or Ombi's version) or why not, and up to date, a new client installed (with **Reload now**) or why the
+update failed. The dashboard home also gets a JellyFlix plugin card.
 
 <p align="center">
 <img alt="Dashboard" src="docs/screenshots/dashboard.jpg" width="49%"/>
@@ -177,11 +178,10 @@ That's all. The plugin downloads the newest Lanternfish web client built for you
 the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
-Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, avatar
-icons and photos need 1.2.1, and seasonal themes and dynamic colors need 1.3.0; without it the
-client simply leaves them out. Some settings need a recent plugin too; the settings page says so when the installed
-plugin is too old. Update JellyFlix in
-**Dashboard → Plugins** and restart Jellyfin.
+Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, avatar icons and
+photos need 1.2.1, seasonal themes and dynamic colors need 1.3.0, and Ombi needs 1.4.0; without it the client simply
+leaves them out. Some settings need a recent plugin too; the settings page says so when the installed plugin is too
+old. Update JellyFlix in **Dashboard → Plugins** and restart Jellyfin.
 
 ## Releases
 

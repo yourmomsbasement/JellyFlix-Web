@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import config from '../../config.json';
-import DEFAULT_THEME from '../index';
+import defaultTheme from '../index';
 import { DEFAULT_JELLYFLIX_THEME, JELLYFLIX_PALETTES } from './palettes';
 import { buildJellyFlixScheme, toChannel } from './scheme';
 
@@ -26,7 +26,7 @@ describe('JellyFlix themes', () => {
 
     it('registers every JellyFlix palette as a color scheme', () => {
         for (const id of Object.keys(JELLYFLIX_PALETTES)) {
-            expect(DEFAULT_THEME.colorSchemes).toHaveProperty(id);
+            expect(defaultTheme.colorSchemes).toHaveProperty(id);
             expect(config.themes.some(theme => theme.id === id)).toBe(true);
         }
     });

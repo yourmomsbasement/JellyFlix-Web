@@ -22,6 +22,10 @@ export interface JellyFlixConfiguration {
     SeerrUrl?: string
     SeerrApiKey?: string
     AllowKidsRequests?: boolean
+    /** Missing before plugin 1.4.0, which only spoke to Seerr. */
+    RequestsProvider?: 'Seerr' | 'Ombi'
+    OmbiUrl?: string
+    OmbiApiKey?: string
     /** The search settings are missing before plugin 1.2.0. */
     SemanticSearchEnabled?: boolean
     EmbeddingsUrl?: string
@@ -135,11 +139,15 @@ export const useSaveJellyFlixConfiguration = () => {
     });
 };
 
-/** Checks the Seerr connection with the saved settings; resolves to Seerr's version. */
-export const useTestSeerr = () => {
+/** Checks the request service's connection with the saved settings; resolves to the service and its version. */
+export const useTestRequests = () => {
     const { api } = useApi();
     return useMutation({
-        mutationFn: async () => (await request<{ Version: string }>(api!, 'POST', '/JellyFlix/Requests/Test')).Version
+        mutationFn: async () => {
+            const result = await request<{ Version: string, Provider?: string }>(api!, 'POST', '/JellyFlix/Requests/Test');
+            // Plugins before 1.4.0 only spoke to Seerr
+            return { version: result.Version, provider: result.Provider || 'Seerr' };
+        }
     });
 };
 
