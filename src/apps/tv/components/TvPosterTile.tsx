@@ -2,6 +2,7 @@ import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models/base
 import Box from '@mui/material/Box';
 import React, { type FC, type KeyboardEvent } from 'react';
 
+import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { getPosterUrl } from 'apps/modern/features/home/utils/images';
 import { getDisplayTitle, getEpisodeLabel, getPlayedPercentage, openItem, playItem } from 'apps/modern/features/home/utils/items';
 import { useApi } from 'hooks/useApi';
@@ -29,6 +30,7 @@ export const onPlayKey = (item: BaseItemDto) => (e: KeyboardEvent) => {
 /** A 2:3 poster in a TV row. */
 const TvPosterTile: FC<TvPosterTileProps> = ({ item, onFocusItem, onSelect = openItem }) => {
     const { api } = useApi();
+    useArtworkOverrides();
     const posterUrl = getPosterUrl(api, item, 360);
     const progress = getPlayedPercentage(item);
     const episode = getEpisodeLabel(item);

@@ -1,17 +1,11 @@
 import Alert, { type AlertColor } from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Collapse from '@mui/material/Collapse';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormHelperText from '@mui/material/FormHelperText';
-import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import React, { type FC, type FormEvent, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type FormEvent, useEffect, useState } from 'react';
 
 import {
     type JellyFlixConfiguration,
@@ -23,50 +17,13 @@ import {
     useWebUpdateStatus,
     type WebUpdateStatus
 } from 'apps/dashboard/features/jellyflix/api/useJellyFlix';
+import SearchSettings from 'apps/dashboard/features/jellyflix/components/SearchSettings';
+import { Check, ResultPanel, Section } from 'apps/dashboard/features/jellyflix/components/SettingsParts';
 import { getRequestError } from 'apps/legacy/features/search/api/useRequests';
 import Loading from 'components/loading/LoadingComponent';
 import toast from 'components/toast/toast';
 import Page from 'components/Page';
 import globalize from 'lib/globalize';
-
-const Section: FC<{ title: string, description: string, children?: ReactNode }> = ({ title, description, children }) => (
-    <Paper sx={{ p: 3 }}>
-        <Typography variant='h2' sx={{ mb: 1 }}>{title}</Typography>
-        <Typography sx={{ color: 'text.secondary', mb: children ? 3 : 0 }}>{description}</Typography>
-        {children && <Stack spacing={3}>{children}</Stack>}
-    </Paper>
-);
-
-const Check: FC<{ label: string, help?: string, checked: boolean, onChange: (checked: boolean) => void }> = ({ label, help, checked, onChange }) => (
-    <Box>
-        <FormControlLabel control={<Checkbox checked={checked} onChange={e => onChange(e.target.checked)} />} label={label} />
-        {help && <FormHelperText sx={{ mt: 0, ml: 4 }}>{help}</FormHelperText>}
-    </Box>
-);
-
-/** The outcome of a button press, shown in a panel underneath it. */
-const ResultPanel: FC<{ severity?: AlertColor, title?: string, isPending?: boolean, pendingText?: string, children?: ReactNode, action?: ReactNode }> = ({
-    severity,
-    title,
-    isPending,
-    pendingText,
-    children,
-    action
-}) => (
-    <Collapse in={isPending || !!severity} unmountOnExit>
-        {isPending ? (
-            <Box sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
-                <Typography sx={{ mb: 1.5 }}>{pendingText}</Typography>
-                <LinearProgress />
-            </Box>
-        ) : (
-            <Alert severity={severity} variant='outlined' action={action} sx={{ alignItems: 'center' }}>
-                {title && <AlertTitle sx={{ fontWeight: 700 }}>{title}</AlertTitle>}
-                {children}
-            </Alert>
-        )}
-    </Collapse>
-);
 
 /** How a web client check went, from the updater's own words. */
 const getUpdateOutcome = (result: string | null | undefined): { severity: AlertColor, title: string } => {
@@ -266,6 +223,8 @@ export const Component: FC = () => {
                                     </>
                                 )}
                             </Section>
+
+                            <SearchSettings configuration={configuration} update={update} save={save} />
 
                             <Section title={globalize.translate('HeaderWebClient')} description={status ? getWebClientSummary(status) : ''}>
                                 {status && <StatusTable status={status} />}

@@ -4,6 +4,8 @@ import { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-ite
 import { ImageType } from '@jellyfin/sdk/lib/generated-client/models/image-type';
 import { getImageApi } from '@jellyfin/sdk/lib/utils/api/image-api';
 
+import { getArtworkOverride } from 'apps/modern/features/artwork/api/useArtwork';
+
 interface ImageRef {
     itemId: string
     type: ImageType
@@ -12,7 +14,10 @@ interface ImageRef {
 
 const toUrl = (api: Api | undefined, ref: ImageRef | undefined, maxWidth: number) => {
     if (!api || !ref) return undefined;
-    return getImageApi(api).getItemImageUrlById(ref.itemId, ref.type, { tag: ref.tag, maxWidth, quality: 90 });
+    // The poster or backdrop this profile chose for the title, if any
+    const kind = (ref.type === ImageType.Primary && 'Poster') || (ref.type === ImageType.Backdrop && 'Backdrop') || undefined;
+    const override = kind && getArtworkOverride(api, ref.itemId, kind, maxWidth);
+    return override || getImageApi(api).getItemImageUrlById(ref.itemId, ref.type, { tag: ref.tag, maxWidth, quality: 90 });
 };
 
 const ownImage = (item: BaseItemDto, type: ImageType): ImageRef | undefined => {

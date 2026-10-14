@@ -22,6 +22,23 @@ export interface JellyFlixConfiguration {
     SeerrUrl?: string
     SeerrApiKey?: string
     AllowKidsRequests?: boolean
+    /** The search settings are missing before plugin 1.2.0. */
+    SemanticSearchEnabled?: boolean
+    EmbeddingsUrl?: string
+    EmbeddingsModel?: string
+    EmbeddingsApiKey?: string
+}
+
+/** The state of description search. */
+export interface SearchStatus {
+    IsSemanticEnabled: boolean
+    Titles: number
+    EmbeddedTitles: number
+    Model: string | null
+    LastBuild: string | null
+    /** From 0 to 100 while the embeddings are being built, otherwise null. */
+    BuildProgress: number | null
+    LastBuildResult: string | null
 }
 
 /** What the plugin's web updater reports. */
@@ -129,5 +146,37 @@ export const useCheckForWebUpdates = () => {
     return useMutation({
         mutationFn: () => request<WebUpdateStatus>(api!, 'POST', '/JellyFlix/WebUpdate/Check'),
         onSuccess: status => queryClient.setQueryData([ ...QUERY_KEY, 'WebUpdate' ], status)
+    });
+};
+
+const SEARCH_STATUS_KEY = [ ...QUERY_KEY, 'SearchStatus' ];
+
+/** Polls while the embeddings are being built. */
+export const useSearchStatus = (enabled: boolean) => {
+    const { api } = useApi();
+    return useQuery({
+        queryKey: SEARCH_STATUS_KEY,
+        queryFn: ({ signal }) => orNullWithoutPlugin(request<SearchStatus>(api!, 'GET', `/JellyFlix/Search/Status?_=${Date.now()}`, undefined, signal)),
+        enabled: !!api && enabled,
+        refetchInterval: query => (query.state.data?.BuildProgress != null ? 1500 : false),
+        ...FRESH
+    });
+};
+
+/** Checks the embeddings API with the saved settings. */
+export const useTestEmbeddings = () => {
+    const { api } = useApi();
+    return useMutation({
+        mutationFn: () => request<{ Model: string, Dimensions: number }>(api!, 'POST', '/JellyFlix/Search/Test')
+    });
+};
+
+/** Starts embedding new and changed titles; the status then polls until it's done. */
+export const useBuildSearchIndex = () => {
+    const { api } = useApi();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: () => request<SearchStatus>(api!, 'POST', '/JellyFlix/Search/Build'),
+        onSuccess: status => queryClient.setQueryData(SEARCH_STATUS_KEY, status)
     });
 };

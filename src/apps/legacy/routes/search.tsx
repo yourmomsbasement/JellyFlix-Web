@@ -3,6 +3,8 @@ import React, { type FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDebounceValue } from 'usehooks-ts';
 
+import { getDescriptionOnlyMatches, useDescriptionSearch } from 'apps/legacy/features/search/api/useDescriptionSearch';
+import DescriptionResults from 'apps/legacy/features/search/components/DescriptionResults';
 import RequestResults from 'apps/legacy/features/search/components/RequestResults';
 import SearchFields from 'apps/legacy/features/search/components/SearchFields';
 import SearchResults from 'apps/legacy/features/search/components/SearchResults';
@@ -21,6 +23,10 @@ const Search: FC = () => {
     const collectionTypeQuery = (searchParams.get(COLLECTION_TYPE_PARAM) || undefined) as CollectionType | undefined;
     const [ query, setQuery ] = useSearchParam(QUERY_PARAM);
     const [debouncedQuery] = useDebounceValue(query, 500);
+    // JellyFlix: global search also matches descriptions ("space movie with a stranded astronaut")
+    const descriptionQuery = parentIdQuery ? undefined : debouncedQuery?.trim();
+    const { data: descriptionMatches } = useDescriptionSearch(descriptionQuery);
+    const hasDescriptionMatches = !!descriptionQuery && getDescriptionOnlyMatches(descriptionMatches, descriptionQuery).length > 0;
 
     return (
         <Page
@@ -39,7 +45,9 @@ const Search: FC = () => {
                         parentId={parentIdQuery}
                         collectionType={collectionTypeQuery}
                         query={debouncedQuery}
+                        hasOtherResults={hasDescriptionMatches}
                     />
+                    {!parentIdQuery && <DescriptionResults query={debouncedQuery} />}
                     {/* JellyFlix: titles that aren't in the library can be requested (global search only) */}
                     {!parentIdQuery && <RequestResults query={debouncedQuery} />}
                 </>

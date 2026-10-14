@@ -66,6 +66,33 @@ works in TV mode too.
 
 <p align="center"><img alt="Requesting from search" src="docs/screenshots/search-requests.jpg" width="70%"/></p>
 
+### Search by description
+
+Search also finds titles from what they're about: "space movie with a stranded astronaut" lists matching movies and
+shows in a **Matches your description** row, from their plot, tagline, genres, keywords and cast. With an embeddings API
+(such as Ollama) set up in the JellyFlix settings, it matches by meaning too, so "marooned on another planet" finds the
+same film.
+
+<p align="center"><img alt="Matches your description" src="docs/screenshots/search-description.jpg" width="70%"/></p>
+
+### Artwork per profile
+
+**⋯ → Change artwork** on a title page lets a profile pick its own poster and background, from the library's images
+and the ones metadata providers offer. Only that profile sees the change, on home, title pages and in TV mode.
+
+<p align="center"><img alt="Change artwork" src="docs/screenshots/artwork-dialog.jpg" width="70%"/></p>
+
+### End-credit companion
+
+When a movie ends, a companion page offers what to watch next: the next film in its collection with **Play**, the
+movie's extras (behind the scenes, featurettes, deleted scenes…), who wrote the music and any soundtrack albums in the
+music library, and More Like This. TV mode has its own version, built for the remote.
+
+<p align="center">
+<img alt="End-credit companion" src="docs/screenshots/companion.jpg" width="49%"/>
+<img alt="End-credit companion on TV" src="docs/screenshots/tv-companion.jpg" width="49%"/>
+</p>
+
 ### Dashboard
 
 With the JellyFlix theme the admin dashboard gets a cleaner, more modern look: rounded cards with hairline borders,
@@ -76,11 +103,13 @@ A **JellyFlix** section in the side menu opens a settings page built from the da
 
 - **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
 - **Requests**: Seerr's address and API key, kids profiles' access, and **Save and test connection**.
+- **Search**: how many titles are searchable by description, semantic search with an embeddings API's address, model
+  and key, **Save and test connection**, and **Build search index now** with a progress bar.
 - **Web client**: the installed and latest version, whether the plugin serves it, automatic updates, and
   **Check for updates now**.
 
 Saving happens from a bar that stays on screen and confirms the result next to the Save button; the page reads the
-settings back from the server and names any it didn't keep. Testing Seerr and checking for updates each open a panel
+settings back from the server and names any it didn't keep. Testing Seerr or the embeddings API, building the search index and checking for updates each open a panel
 underneath with a progress bar and then the outcome: connected (with Seerr's version) or why not, and up to date, a
 new client installed (with **Reload now**) or why the update failed. The dashboard home also gets a JellyFlix card.
 
@@ -88,7 +117,10 @@ new client installed (with **Reload now**) or why the update failed. The dashboa
 <img alt="Dashboard" src="docs/screenshots/dashboard.jpg" width="49%"/>
 <img alt="JellyFlix settings" src="docs/screenshots/dashboard-jellyflix.jpg" width="49%"/>
 </p>
-<p align="center"><img alt="Testing the Seerr connection" src="docs/screenshots/dashboard-requests.jpg" width="70%"/></p>
+<p align="center">
+<img alt="Testing the Seerr connection" src="docs/screenshots/dashboard-requests.jpg" width="49%"/>
+<img alt="Search settings" src="docs/screenshots/dashboard-search.jpg" width="49%"/>
+</p>
 
 ## Install
 
@@ -102,7 +134,9 @@ That's all. The plugin downloads the newest JellyFlix web client built for your 
 the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
-Some settings need a recent plugin; the settings page says so when the installed plugin is too old. Update JellyFlix in
+Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer; without it the
+client simply leaves them out. Some settings need a recent plugin too; the settings page says so when the installed
+plugin is too old. Update JellyFlix in
 **Dashboard → Plugins** and restart Jellyfin.
 
 ## Releases
@@ -156,6 +190,9 @@ Where the code lives:
 | `src/apps/modern/features/title/utils/mediaInfo.ts` | Video & Audio details and quality badges |
 | `src/themes/jellyflix/dashboard.ts` | The modern dashboard look |
 | `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |
+| `src/apps/legacy/features/search/components/DescriptionResults.tsx` | Matches your description row |
+| `src/apps/modern/features/artwork` | Change artwork dialog and per-profile artwork |
+| `src/apps/modern/features/companion`, `routes/companion.tsx`, `src/apps/tv/routes/companion.tsx` | End-credit companion |
 | `src/themes/jellyflix` | The JellyFlix theme |
 
 JellyFlix builds on the work of the [Jellyfin project](https://jellyfin.org). Review Jellyfin's

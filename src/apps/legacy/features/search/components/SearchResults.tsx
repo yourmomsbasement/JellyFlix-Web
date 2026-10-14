@@ -12,6 +12,8 @@ interface SearchResultsProps {
     parentId?: string;
     collectionType?: CollectionType;
     query?: string;
+    /** JellyFlix: other results (matches by description) are on the page, so an empty name search says nothing. */
+    hasOtherResults?: boolean;
 }
 
 /*
@@ -20,13 +22,15 @@ interface SearchResultsProps {
 const SearchResults: FC<SearchResultsProps> = ({
     parentId,
     collectionType,
-    query
+    query,
+    hasOtherResults
 }) => {
     const { data, isPending } = useSearchItems(parentId, collectionType, query?.trim());
 
     if (isPending) return <Loading />;
 
     if (!data?.length) {
+        if (hasOtherResults) return null;
         return (
             <div className='noItemsMessage centerMessage'>
                 {globalize.translate('SearchResultsEmpty', query)}

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import { keyframes } from '@mui/material/styles';
 import React, { type FC, type ReactNode } from 'react';
 
+import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { MATCH_GREEN } from 'apps/modern/features/home/styles';
 import { getBackdropUrl, getLogoUrl } from 'apps/modern/features/home/utils/images';
 import { getDisplayTitle, getEpisodeLabel, getMetaParts } from 'apps/modern/features/home/utils/items';
@@ -24,6 +25,8 @@ interface TvBillboardProps {
     match?: number | null
     /** Lines of description to show. */
     overviewLines?: number
+    /** A line above the title, such as "Next in …". */
+    eyebrow?: ReactNode
     children?: ReactNode
 }
 
@@ -31,8 +34,9 @@ interface TvBillboardProps {
  * The top of Netflix's TV screens: big artwork on the right fading into the page, with the title, its details and
  * description on the left. On Home it follows the focused tile.
  */
-const TvBillboard: FC<TvBillboardProps> = ({ item, height = '40vw', match, overviewLines = 3, children }) => {
+const TvBillboard: FC<TvBillboardProps> = ({ item, height = '40vw', match, overviewLines = 3, eyebrow, children }) => {
     const { api } = useApi();
+    useArtworkOverrides();
     if (!item) return null;
 
     const backdropUrl = getBackdropUrl(api, item, 1280);
@@ -79,6 +83,10 @@ const TvBillboard: FC<TvBillboardProps> = ({ item, height = '40vw', match, overv
                     animation: `${fadeIn} 0.35s ease-out`
                 }}
             >
+                {eyebrow && (
+                    <Box sx={{ mb: '0.8vw', color: 'primary.main', fontSize: '1.1vw', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{eyebrow}</Box>
+                )}
+
                 {logoUrl ? (
                     <Box component='img' src={logoUrl} alt={title} sx={{ display: 'block', maxWidth: '28vw', maxHeight: '8vw', objectFit: 'contain', objectPosition: 'left bottom', mb: '1.2vw' }} />
                 ) : (

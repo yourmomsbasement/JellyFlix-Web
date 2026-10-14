@@ -7,6 +7,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import React, { type FC, type MouseEvent, useCallback } from 'react';
 
+import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
@@ -26,6 +27,7 @@ interface MediaCardProps {
 /** A 2:3 poster tile. It grows on hover and reveals a play button and the title details. */
 const MediaCard: FC<MediaCardProps> = ({ item, primaryAction = 'open', watchActions }) => {
     const { api } = useApi();
+    useArtworkOverrides();
     const posterUrl = getPosterUrl(api, item);
     const title = getDisplayTitle(item);
     const episodeLabel = getEpisodeLabel(item);

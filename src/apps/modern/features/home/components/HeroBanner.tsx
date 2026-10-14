@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { type FC, useEffect, useState } from 'react';
 
+import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
@@ -33,6 +34,7 @@ interface HeroBannerProps {
  */
 const HeroBanner: FC<HeroBannerProps> = ({ items }) => {
     const { api } = useApi();
+    useArtworkOverrides();
     const [ index, setIndex ] = useState(0);
     const [ isPaused, setIsPaused ] = useState(false);
     const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');

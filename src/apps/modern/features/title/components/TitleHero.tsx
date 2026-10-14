@@ -19,6 +19,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import React, { type FC, useState } from 'react';
 
+import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
+import ArtworkDialog from 'apps/modern/features/artwork/components/ArtworkDialog';
 import { appRouter } from 'components/router/appRouter';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
@@ -58,6 +60,8 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] })
     const { api } = useApi();
     const actions = useTitleActions(item);
     const [ menuAnchor, setMenuAnchor ] = useState<HTMLElement | null>(null);
+    const [ isArtworkOpen, setIsArtworkOpen ] = useState(false);
+    const overrides = useArtworkOverrides();
 
     const logoUrl = getLogoUrl(api, item);
     const isSeries = item.Type === BaseItemKind.Series;
@@ -227,7 +231,19 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] })
                         >
                             {globalize.translate('ClassicView')}
                         </MenuItem>
+                        {/* Only with a plugin that keeps artwork choices */}
+                        {overrides && (
+                            <MenuItem
+                                onClick={() => {
+                                    setMenuAnchor(null);
+                                    setIsArtworkOpen(true);
+                                }}
+                            >
+                                {globalize.translate('ChangeArtwork')}
+                            </MenuItem>
+                        )}
                     </Menu>
+                    <ArtworkDialog item={item} open={isArtworkOpen} onClose={() => setIsArtworkOpen(false)} />
                 </Stack>
 
                 {position > 0 && runtime > 0 && (

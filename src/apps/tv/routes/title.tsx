@@ -39,12 +39,12 @@ const TICKS_PER_MINUTE = 600_000_000;
 const MAX_CAST = 3;
 
 /** Back, or Home when the page was opened directly. */
-const goBack = () => {
+export const goBack = () => {
     void (appRouter.canGoBack() ? appRouter.back() : appRouter.goHome());
 };
 
 /** The buttons stay put; rows further down slide up to just below the top of the screen. */
-const stageOffset = (row: HTMLElement, top: number) => (row.dataset.tvStatic === undefined ? top - window.innerWidth * 0.03 : 0);
+export const stageOffset = (row: HTMLElement, top: number) => (row.dataset.tvStatic === undefined ? top - window.innerWidth * 0.03 : 0);
 
 interface PillProps {
     icon: ReactNode
@@ -53,7 +53,7 @@ interface PillProps {
     onSelect: () => void
 }
 
-const Pill: FC<PillProps> = ({ icon, label, isDefault, onSelect }) => (
+export const Pill: FC<PillProps> = ({ icon, label, isDefault, onSelect }) => (
     <Box component='button' type='button' data-tv-item data-tv-default={isDefault || undefined} onClick={onSelect} sx={tvPillSx}>
         {icon}
         {label}
