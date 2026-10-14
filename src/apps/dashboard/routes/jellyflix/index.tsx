@@ -1,9 +1,12 @@
-import Alert from '@mui/material/Alert';
+import Alert, { type AlertColor } from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import Collapse from '@mui/material/Collapse';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -40,6 +43,79 @@ const Check: FC<{ label: string, help?: string, checked: boolean, onChange: (che
         {help && <FormHelperText sx={{ mt: 0, ml: 4 }}>{help}</FormHelperText>}
     </Box>
 );
+
+/** The outcome of a button press, shown in a panel underneath it. */
+const ResultPanel: FC<{ severity?: AlertColor, title?: string, isPending?: boolean, pendingText?: string, children?: ReactNode, action?: ReactNode }> = ({
+    severity,
+    title,
+    isPending,
+    pendingText,
+    children,
+    action
+}) => (
+    <Collapse in={isPending || !!severity} unmountOnExit>
+        {isPending ? (
+            <Box sx={{ p: 2, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+                <Typography sx={{ mb: 1.5 }}>{pendingText}</Typography>
+                <LinearProgress />
+            </Box>
+        ) : (
+            <Alert severity={severity} variant='outlined' action={action} sx={{ alignItems: 'center' }}>
+                {title && <AlertTitle sx={{ fontWeight: 700 }}>{title}</AlertTitle>}
+                {children}
+            </Alert>
+        )}
+    </Collapse>
+);
+
+/** How a web client check went, from the updater's own words. */
+const getUpdateOutcome = (result: string | null | undefined): { severity: AlertColor, title: string } => {
+    if (result?.startsWith('Installed')) return { severity: 'success', title: globalize.translate('WebUpdateInstalled') };
+    if (result?.startsWith('Up to date')) return { severity: 'success', title: globalize.translate('WebUpdateUpToDate') };
+    if (result?.startsWith('Update failed')) return { severity: 'error', title: globalize.translate('WebUpdateFailed') };
+    return { severity: 'warning', title: globalize.translate('WebUpdateNothingToInstall') };
+};
+
+const SeerrTestResult: FC<{ test: ReturnType<typeof useTestSeerr>, isRequestsEnabled: boolean }> = ({ test, isRequestsEnabled }) => (
+    <ResultPanel
+        isPending={test.isPending}
+        pendingText={globalize.translate('SeerrTesting')}
+        severity={(test.isSuccess && 'success') || (test.isError && 'error') || undefined}
+        title={globalize.translate(test.isSuccess ? 'SeerrConnectedTitle' : 'SeerrFailedTitle')}
+    >
+        {test.isSuccess && (
+            <>
+                {globalize.translate('SeerrVersion', test.data)}{' '}
+                {globalize.translate(isRequestsEnabled ? 'SeerrConnectedReady' : 'SeerrConnectedTurnOn')}
+            </>
+        )}
+        {test.isError && (
+            <>
+                <Box sx={{ fontWeight: 600 }}>{getRequestError(test.error)}</Box>
+                {globalize.translate('SeerrFailedHelp')}
+            </>
+        )}
+    </ResultPanel>
+);
+
+const UpdateCheckResult: FC<{ check: ReturnType<typeof useCheckForWebUpdates> }> = ({ check }) => {
+    const result = check.data?.LastResult;
+    const outcome = getUpdateOutcome(result);
+    const canReload = !!result?.startsWith('Installed') && !!check.data?.IsServerUsingInstall;
+
+    return (
+        <ResultPanel
+            isPending={check.isPending}
+            pendingText={globalize.translate('WebUpdateChecking')}
+            severity={(check.isSuccess && outcome.severity) || (check.isError && 'error') || undefined}
+            title={check.isSuccess ? outcome.title : globalize.translate('WebUpdateFailed')}
+            action={canReload ? <Button color='inherit' onClick={() => window.location.reload()}>{globalize.translate('ButtonReloadNow')}</Button> : undefined}
+        >
+            {check.isSuccess && <>{result}{canReload && <> {globalize.translate('WebUpdateReloadHelp')}</>}</>}
+            {check.isError && getRequestError(check.error)}
+        </ResultPanel>
+    );
+};
 
 /** Who sees which web client, in a sentence. */
 export const getWebClientSummary = (status: WebUpdateStatus) => {
@@ -173,22 +249,20 @@ export const Component: FC = () => {
                                             checked={!!configuration.AllowKidsRequests}
                                             onChange={checked => update({ AllowKidsRequests: checked })}
                                         />
-                                        <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+                                        <Box>
                                             <Button
                                                 variant='outlined'
                                                 disabled={save.isPending || testSeerr.isPending || !configuration.SeerrUrl || !configuration.SeerrApiKey}
                                                 // The test uses the saved settings, so save first
-                                                onClick={() => save.mutate(configuration, { onSuccess: () => testSeerr.mutate() })}
+                                                onClick={() => {
+                                                    testSeerr.reset();
+                                                    save.mutate(configuration, { onSuccess: () => testSeerr.mutate() });
+                                                }}
                                             >
                                                 {globalize.translate('ButtonTestSeerr')}
                                             </Button>
-                                            {testSeerr.isSuccess && (
-                                                <Typography sx={{ color: 'success.main' }}>{globalize.translate('SeerrConnected', testSeerr.data)}</Typography>
-                                            )}
-                                            {testSeerr.isError && (
-                                                <Typography sx={{ color: 'error.main' }}>{getRequestError(testSeerr.error)}</Typography>
-                                            )}
-                                        </Stack>
+                                        </Box>
+                                        <SeerrTestResult test={testSeerr} isRequestsEnabled={!!configuration.RequestsEnabled} />
                                     </>
                                 )}
                             </Section>
@@ -222,6 +296,7 @@ export const Component: FC = () => {
                                         {globalize.translate('ButtonCheckForUpdates')}
                                     </Button>
                                 </Box>
+                                <UpdateCheckResult check={checkForUpdates} />
                             </Section>
 
                             {/* Stays on screen while scrolling, so the result of saving is always visible */}

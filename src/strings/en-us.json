@@ -2061,5 +2061,19 @@
     "LabelAllowKidsRequests": "Let kids profiles request titles",
     "ButtonTestSeerr": "Save and test connection",
     "SeerrConnected": "Connected to Seerr {0}.",
-    "JellyFlixRequestsOutdated": "Requests need a newer JellyFlix plugin. Update JellyFlix in Dashboard → Plugins and restart Jellyfin."
+    "JellyFlixRequestsOutdated": "Requests need a newer JellyFlix plugin. Update JellyFlix in Dashboard → Plugins and restart Jellyfin.",
+    "SeerrTesting": "Saving and contacting Seerr…",
+    "SeerrConnectedTitle": "Connected to Seerr",
+    "SeerrFailedTitle": "Couldn't connect to Seerr",
+    "SeerrConnectedReady": "Search now shows titles that aren't in the library, ready to request.",
+    "SeerrConnectedTurnOn": "Turn on requests above and save to show request cards in search.",
+    "SeerrFailedHelp": "Check that the address is reachable from the Jellyfin server (include http:// and the port) and that the API key is copied from Seerr → Settings → General.",
+    "WebUpdateChecking": "Checking for a new JellyFlix web client… This can take a few minutes if there's one to download.",
+    "WebUpdateInstalled": "New web client installed",
+    "WebUpdateUpToDate": "The web client is up to date",
+    "WebUpdateFailed": "The update didn't work",
+    "WebUpdateNothingToInstall": "Nothing to install",
+    "WebUpdateReloadHelp": "Reload to start using it.",
+    "ButtonReloadNow": "Reload now",
+    "SeerrVersion": "Seerr {0}."
 }
