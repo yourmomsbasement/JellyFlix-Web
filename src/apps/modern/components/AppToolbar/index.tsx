@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { appRouter, PUBLIC_PATHS } from 'components/router/appRouter';
 import BaseToolbar from 'components/toolbar/AppToolbar';
 
-import JellyFlixLogo from './JellyFlixLogo';
+import LanternfishLogo from './LanternfishLogo';
 import RemotePlayButton from './RemotePlayButton';
 import SyncPlayButton from './SyncPlayButton';
 import SearchButton from './SearchButton';
@@ -55,7 +55,7 @@ const AppToolbar: FC<AppToolbarProps> = ({
                 spacing={0.5}
                 sx={{ alignItems: 'center' }}
             >
-                <JellyFlixLogo />
+                <LanternfishLogo />
 
                 {!isDrawerAvailable && !isPublicPath && (
                     <UserViewNav />

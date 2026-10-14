@@ -1,11 +1,11 @@
 {
-    "name": "Jellyfin",
-    "description": "The Free Software Media System",
+    "name": "Lanternfish",
+    "description": "Your Jellyfin library on every screen",
     "lang": "en-US",
-    "short_name": "Jellyfin",
+    "short_name": "Lanternfish",
     "start_url": "index.html#/home",
-    "theme_color": "#101010",
-    "background_color": "#101010",
+    "theme_color": "#0d1117",
+    "background_color": "#0d1117",
     "display": "standalone",
     "icons": [
         {
