@@ -37,8 +37,9 @@ genres and Watch It Again.
 ### Title pages
 
 Backdrop and title art, match percentage, Play/Resume that picks up the right episode, trailers, My List, thumbs up and
-down, seasons and episodes, More Like This, cast and crew, and the file's video and audio details (container,
-resolution, HDR format, audio and subtitle tracks, size and bitrate) with 4K / HDR / Dolby Vision / 5.1 / Atmos badges.
+down, seasons and episodes, More Like This, cast and crew, and a back arrow in the top bar. A **Video & Audio** section
+lists the file behind the title (container, resolution and codec, HDR format, audio and subtitle tracks, size and
+bitrate, for each version), and badges such as 4K, HDR, Dolby Vision, 5.1 and Atmos sit next to the year and rating.
 
 <p align="center"><img alt="Episodes" src="docs/screenshots/title-episodes.jpg" width="70%"/></p>
 
@@ -58,18 +59,36 @@ focused title, and LG's Magic Remote pointer works.
 ### Requests
 
 With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) set up in the JellyFlix settings, search
-also shows matching movies and shows that aren't in the library, each with a **Request** button. Requests go through
-the household owner's Seerr account, and the cards show what's already requested or on its way.
+also shows a **Not in your library** row: matching movies and shows that the library doesn't have, each with a
+**Request** button. Cards show what's already requested ("Requested"), on its way ("Coming soon") or partly
+available. Requests go through the household owner's Seerr account; kids profiles don't see the row unless allowed. It
+works in TV mode too.
+
+<p align="center"><img alt="Requesting from search" src="docs/screenshots/search-requests.jpg" width="70%"/></p>
 
 ### Dashboard
 
-The admin dashboard uses the JellyFlix look, with a JellyFlix section for profiles, recommendations and web client
-updates.
+With the JellyFlix theme the admin dashboard gets a cleaner, more modern look: rounded cards with hairline borders,
+rounded inputs with a red focus ring, a side menu of pill-shaped items with the current page in red, and a translucent
+top bar. Older HTML pages, such as plugin settings, get the same treatment.
+
+A **JellyFlix** section in the side menu opens a settings page built from the dashboard's own cards and inputs:
+
+- **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
+- **Requests**: Seerr's address and API key, kids profiles' access, and **Save and test connection**.
+- **Web client**: the installed and latest version, whether the plugin serves it, automatic updates, and
+  **Check for updates now**.
+
+Saving happens from a bar that stays on screen and confirms the result next to the Save button; the page reads the
+settings back from the server and names any it didn't keep. Testing Seerr and checking for updates each open a panel
+underneath with a progress bar and then the outcome: connected (with Seerr's version) or why not, and up to date, a
+new client installed (with **Reload now**) or why the update failed. The dashboard home also gets a JellyFlix card.
 
 <p align="center">
 <img alt="Dashboard" src="docs/screenshots/dashboard.jpg" width="49%"/>
 <img alt="JellyFlix settings" src="docs/screenshots/dashboard-jellyflix.jpg" width="49%"/>
 </p>
+<p align="center"><img alt="Testing the Seerr connection" src="docs/screenshots/dashboard-requests.jpg" width="70%"/></p>
 
 ## Install
 
@@ -80,8 +99,11 @@ JellyFlix needs **Jellyfin 13** (the `unstable` builds).
 2. Install **JellyFlix** from the catalog and restart Jellyfin.
 
 That's all. The plugin downloads the newest JellyFlix web client built for your Jellyfin version, serves it in place of
-the stock one, and keeps it up to date. See the [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin)
-for details.
+the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
+[plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
+
+Some settings need a recent plugin; the settings page says so when the installed plugin is too old. Update JellyFlix in
+**Dashboard → Plugins** and restart Jellyfin.
 
 ## Releases
 
@@ -130,7 +152,9 @@ Where the code lives:
 | `src/apps/modern/features/home`, `routes/home.tsx` | Home rows and hero |
 | `src/apps/modern/features/title`, `routes/title.tsx` | Title pages |
 | `src/apps/tv` | TV mode: remote navigation, TV home and title pages |
-| `src/apps/dashboard/features/jellyflix` | JellyFlix dashboard settings |
+| `src/apps/dashboard/features/jellyflix`, `routes/jellyflix` | JellyFlix dashboard settings and home card |
+| `src/apps/modern/features/title/utils/mediaInfo.ts` | Video & Audio details and quality badges |
+| `src/themes/jellyflix/dashboard.ts` | The modern dashboard look |
 | `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |
 | `src/themes/jellyflix` | The JellyFlix theme |
 
