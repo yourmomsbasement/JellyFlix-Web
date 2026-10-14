@@ -22,7 +22,7 @@ const DrawerHeaderLink = () => {
                 </Box>
             </ListItemIcon>
             <ListItemText
-                primary={systemInfo?.ServerName || 'JellyFlix'}
+                primary={systemInfo?.ServerName || 'Lanternfish'}
                 secondary={getDisplayVersion(systemInfo?.Version)}
                 slotProps={{
                     primary: { variant: 'h6' }
