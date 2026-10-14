@@ -1,0 +1,11 @@
+/* The "Ember" JellyFlix theme; colors from themes/jellyflix/palettes.ts */
+@use '../_base/jellyflix' with (
+    $background: #14100e,
+    $paper: #1c1714,
+    $accent: #ff8a3d,
+    $accent-dark: #e06a1f,
+    $accent-light: #ffa566,
+    $on-accent: #14100e,
+    $input: #3a2e27,
+    $muted: #bbada4
+);

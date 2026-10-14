@@ -65,7 +65,7 @@ const TvBillboard: FC<TvBillboardProps> = ({ item, height = '40vw', match, overv
                             content: '""',
                             position: 'absolute',
                             inset: 0,
-                            background: `linear-gradient(to right, ${BACKGROUND} 0%, rgba(20, 20, 20, 0.6) 25%, transparent 55%),
+                            background: `linear-gradient(to right, ${BACKGROUND} 0%, rgb(var(--jf-palette-background-defaultChannel) / 0.6) 25%, transparent 55%),
                                 linear-gradient(to top, ${BACKGROUND} 0%, transparent 40%)`
                         }
                     }}

@@ -13,8 +13,9 @@ export const POSTER_HEIGHT = '15.3vw';
 /** Gap between tiles. */
 export const TILE_GAP = '0.7vw';
 
-export const BACKGROUND = '#141414';
-export const NETFLIX_RED = '#e50914';
+/** The theme's page background and accent (CSS variables, so they follow the profile's theme). */
+export const BACKGROUND = 'var(--jf-palette-background-default)';
+export const ACCENT = 'var(--jf-palette-primary-main)';
 
 /** The white ring Netflix draws around the focused tile. */
 export const focusRingSx = {

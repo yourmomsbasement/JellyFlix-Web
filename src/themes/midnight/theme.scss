@@ -1,0 +1,11 @@
+/* The "Midnight" JellyFlix theme; colors from themes/jellyflix/palettes.ts */
+@use '../_base/jellyflix' with (
+    $background: #0d1117,
+    $paper: #141a24,
+    $accent: #7aa2ff,
+    $accent-dark: #5a80e0,
+    $accent-light: #9bb9ff,
+    $on-accent: #0d1117,
+    $input: #2a3242,
+    $muted: #a9b1c2
+);

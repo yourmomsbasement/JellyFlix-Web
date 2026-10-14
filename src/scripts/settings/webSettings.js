@@ -57,8 +57,8 @@ export function getServers() {
 }
 
 const baseDefaultTheme = {
-    'name': 'JellyFlix',
-    'id': 'jellyflix',
+    'name': 'Midnight',
+    'id': 'midnight',
     'default': true
 };
 

@@ -7,22 +7,34 @@
       "id": "appletv",
       "color": "#bcbcbc"
     }, {
+      "name": "Aurora",
+      "id": "aurora",
+      "color": "#0a1413"
+    }, {
       "name": "Blue Radiance",
       "id": "blueradiance",
       "color": "#011432"
+    }, {
+      "name": "Classic Red",
+      "id": "jellyflix",
+      "color": "#141414"
     }, {
       "name": "Dark",
       "id": "dark",
       "color": "#202020"
     }, {
-      "name": "JellyFlix",
-      "id": "jellyflix",
-      "color": "#141414",
-      "default": true
+      "name": "Ember",
+      "id": "ember",
+      "color": "#14100e"
     }, {
       "name": "Light",
       "id": "light",
       "color": "#303030"
+    }, {
+      "name": "Midnight",
+      "id": "midnight",
+      "color": "#0d1117",
+      "default": true
     }, {
       "name": "Purple Haze",
       "id": "purplehaze",

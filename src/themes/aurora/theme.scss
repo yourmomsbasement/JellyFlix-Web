@@ -1,0 +1,11 @@
+/* The "Aurora" JellyFlix theme; colors from themes/jellyflix/palettes.ts */
+@use '../_base/jellyflix' with (
+    $background: #0a1413,
+    $paper: #101d1c,
+    $accent: #2ed3b7,
+    $accent-dark: #1faf97,
+    $accent-light: #5fe3cc,
+    $on-accent: #0a1413,
+    $input: #21383a,
+    $muted: #a1bab7
+);

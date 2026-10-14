@@ -35,7 +35,7 @@ export const JELLYFLIX_DASHBOARD_COMPONENTS: ThemeOptions['components'] = {
             root: inDashboard({
                 border: 0,
                 borderRadius: 0,
-                backgroundColor: 'rgba(20, 20, 20, 0.85)',
+                backgroundColor: 'rgb(var(--jf-palette-background-defaultChannel) / 0.85)',
                 backdropFilter: 'blur(12px)',
                 borderBottom: HAIRLINE
             })
