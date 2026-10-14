@@ -49,6 +49,7 @@ const AppToolbar: FC<AppToolbarProps> = ({
             isBackButtonAvailable={isBackButtonAvailable}
             isUserMenuAvailable={!isPublicPath}
             className='padded-left padded-right'
+            topSpace='10px'
         >
             <Stack
                 direction='row'

@@ -20,6 +20,8 @@ interface AppToolbarProps {
     isBackButtonAvailable?: boolean
     isUserMenuAvailable?: boolean
     className?: string
+    /** Extra room above the bar's contents, e.g. for the Lanternfish lure rising above the wordmark. */
+    topSpace?: string
 }
 
 const onBackButtonClick = () => {
@@ -39,7 +41,8 @@ const AppToolbar: FC<PropsWithChildren<AppToolbarProps>> = ({
     onDrawerButtonClick = () => { /* no-op */ },
     isBackButtonAvailable = false,
     isUserMenuAvailable = true,
-    className
+    className,
+    topSpace
 }) => {
     const { user } = useApi();
     const isUserLoggedIn = Boolean(user);
@@ -52,7 +55,8 @@ const AppToolbar: FC<PropsWithChildren<AppToolbarProps>> = ({
                 flexWrap: {
                     xs: 'wrap',
                     lg: 'nowrap'
-                }
+                },
+                pt: topSpace
             }}
         >
             {isUserLoggedIn && isDrawerAvailable && (

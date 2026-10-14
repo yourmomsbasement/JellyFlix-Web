@@ -19,7 +19,7 @@ const JellyFlixDrawerSection = () => {
             aria-labelledby='jellyflix-subheader'
             subheader={
                 <ListSubheader component='div' id='jellyflix-subheader'>
-                    JellyFlix
+                    Lanternfish
                 </ListSubheader>
             }
         >

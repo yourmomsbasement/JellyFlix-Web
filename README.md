@@ -11,16 +11,19 @@ profiles and "Who's watching?", a home screen of poster rows, personalized recom
 mode built for remote controls. It comes in four color themes (Midnight by default, Ember, Aurora and Classic Red),
 and the [Lanternfish TV apps](https://github.com/yourmomsbasement/LanternFish-Client) for Roku, Android TV, Fire TV,
 LG webOS and Samsung Tizen build on it. Together with the
-[JellyFlix plugin](https://github.com/yourmomsbasement/JellyFlix-Plugin) it is installed and kept up to date from the
+[Lanternfish plugin](https://github.com/yourmomsbasement/JellyFlix-Plugin) it is installed and kept up to date from the
 Jellyfin dashboard. No files to copy and no server settings to change.
+
+Lanternfish was called JellyFlix until October 2026. Existing installs keep working: the plugin, its settings and the
+repository addresses are the same, and update to the new name and look on their own.
 
 <p align="center">
 <img alt="Home" src="docs/screenshots/home.jpg" width="49%"/>
 <img alt="Title page" src="docs/screenshots/title.jpg" width="49%"/>
 </p>
 
-<sub>Screenshots use a test library with generated artwork; your own posters and backdrops show up here. They show the
-Classic Red theme from before the rename to Lanternfish.</sub>
+<sub>Screenshots use a test library with generated artwork, in the Midnight theme; your own posters and backdrops show up
+here.</sub>
 
 ## Features
 
@@ -51,7 +54,7 @@ jack-o'-lanterns, and curated **Halloween Picks**, **Not Too Scary: Family Frigh
 shelves. December brings falling snow, twinkling string lights, holly red and **Holiday Favorites**; summer brings a
 slow-turning sun, ocean teal and **Summer Vibes**. Shelves come from the library's own plots, taglines, tags and genres,
 only include titles the profile may see, and are left out when the library doesn't have enough for one. Seasons follow
-the calendar or can be forced or turned off in the JellyFlix plugin settings. Decorations never get in the way of clicks and
+the calendar or can be forced or turned off in the Lanternfish plugin settings. Decorations never get in the way of clicks and
 stand still when the device asks for reduced motion. TV mode gets them too.
 
 <p align="center">
@@ -65,7 +68,7 @@ stand still when the device asks for reduced motion. TV mode gets them too.
 Title pages take a subtle accent from the title's artwork: the Play button, progress bars and highlights turn the
 film's color, with a soft glow of it behind the page. The color is toned down until white text on it stays readable
 (WCAG AA), and grey artwork keeps the theme's own accent. Out of season, the home page's hero does the same for the featured
-title. It works in TV mode and on the end-credit companion, and can be turned off in the JellyFlix plugin settings.
+title. It works in TV mode and on the end-credit companion, and can be turned off in the Lanternfish plugin settings.
 
 <p align="center"><img alt="Dynamic colors" src="docs/screenshots/title-dynamic.jpg" width="70%"/></p>
 
@@ -95,7 +98,7 @@ focused title, and LG's Magic Remote pointer works.
 ### Requests
 
 With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) or [Ombi](https://ombi.io) set up in the
-JellyFlix plugin settings, search also shows a **Not in your library** row: matching movies and shows that the library
+Lanternfish plugin settings, search also shows a **Not in your library** row: matching movies and shows that the library
 doesn't have, each with a **Request** button. Cards show what's already requested ("Requested"), on its way ("Coming
 soon") or partly available. Requests go through the household owner's Seerr or Ombi account; kids profiles don't see
 the row unless allowed. It works in TV mode too.
@@ -106,7 +109,7 @@ the row unless allowed. It works in TV mode too.
 
 Search also finds titles from what they're about: "space movie with a stranded astronaut" lists matching movies and
 shows in a **Matches your description** row, from their plot, tagline, genres, keywords and cast. With an embeddings API
-(such as Ollama) set up in the JellyFlix plugin settings, it matches by meaning too, so "marooned on another planet" finds the
+(such as Ollama) set up in the Lanternfish plugin settings, it matches by meaning too, so "marooned on another planet" finds the
 same film.
 
 <p align="center"><img alt="Matches your description" src="docs/screenshots/search-description.jpg" width="70%"/></p>
@@ -141,7 +144,7 @@ The admin dashboard gets a cleaner, more modern look: rounded cards with hairlin
 ring in the theme's accent, a side menu of pill-shaped items with the current page highlighted, and a translucent top
 bar. Older HTML pages, such as plugin settings, get the same treatment.
 
-A **JellyFlix** section in the side menu (the plugin's settings) opens a settings page built from the dashboard's own cards and inputs:
+A **Lanternfish** section in the side menu (the plugin's settings) opens a settings page built from the dashboard's own cards and inputs:
 
 - **Profiles**: profiles per household, the parental rating limit for kids profiles, who may create profiles.
 - **Requests**: Seerr or Ombi, its address and API key, kids profiles' access, and **Save and test connection**.
@@ -155,11 +158,11 @@ Saving happens from a bar that stays on screen and confirms the result next to t
 settings back from the server and names any it didn't keep. Testing Seerr, Ombi or the embeddings API, building the
 search index and checking for updates each open a panel underneath with a progress bar and then the outcome: connected
 (with Seerr's or Ombi's version) or why not, and up to date, a new client installed (with **Reload now**) or why the
-update failed. The dashboard home also gets a JellyFlix plugin card.
+update failed. The dashboard home also gets a Lanternfish plugin card.
 
 <p align="center">
 <img alt="Dashboard" src="docs/screenshots/dashboard.jpg" width="49%"/>
-<img alt="JellyFlix settings" src="docs/screenshots/dashboard-jellyflix.jpg" width="49%"/>
+<img alt="Lanternfish settings" src="docs/screenshots/dashboard-jellyflix.jpg" width="49%"/>
 </p>
 <p align="center">
 <img alt="Testing the Seerr connection" src="docs/screenshots/dashboard-requests.jpg" width="49%"/>
@@ -168,25 +171,30 @@ update failed. The dashboard home also gets a JellyFlix plugin card.
 
 ## Install
 
-Lanternfish needs **Jellyfin 13** (the `unstable` builds) and the JellyFlix plugin.
+Lanternfish needs **Jellyfin 13** (the `unstable` builds) and the Lanternfish plugin.
 
 1. In Jellyfin, open **Dashboard → Plugins → Repositories** and add
    `https://raw.githubusercontent.com/yourmomsbasement/JellyFlix-Plugin/main/manifest.json`.
-2. Install **JellyFlix** from the catalog and restart Jellyfin.
+2. Install **Lanternfish** from the catalog and restart Jellyfin.
 
 That's all. The plugin downloads the newest Lanternfish web client built for your Jellyfin version, serves it in place of
-the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
+the stock one, and keeps it up to date. Settings are under **Lanternfish → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
 Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, avatar icons and
 photos need 1.2.1, seasonal themes and dynamic colors need 1.3.0, and Ombi needs 1.4.0; without it the client simply
 leaves them out. Some settings need a recent plugin too; the settings page says so when the installed plugin is too
-old. Update JellyFlix in **Dashboard → Plugins** and restart Jellyfin.
+old. Update Lanternfish in **Dashboard → Plugins** and restart Jellyfin.
 
 ## Releases
 
 Every push to `master` builds the client and publishes it as a `web-<date>.<run>` GitHub release with
 `jellyflix-web.zip`, its SHA-256 and `release.json` (the Jellyfin version it targets). The plugin installs these.
+
+## Brand
+
+The banner, app icon and wordmark are in [`docs/brand`](docs/brand). In the app, the wordmark's lettering comes from
+the brand artwork and the lure is drawn in the theme's accent color (`src/components/branding`).
 
 ## Build Process
 
@@ -230,7 +238,7 @@ Where the code lives:
 | `src/apps/modern/features/home`, `routes/home.tsx` | Home rows and hero |
 | `src/apps/modern/features/title`, `routes/title.tsx` | Title pages |
 | `src/apps/tv` | TV mode: remote navigation, TV home and title pages |
-| `src/apps/dashboard/features/jellyflix`, `routes/jellyflix` | JellyFlix plugin settings and dashboard card |
+| `src/apps/dashboard/features/jellyflix`, `routes/jellyflix` | Lanternfish plugin settings and dashboard card |
 | `src/apps/modern/features/title/utils/mediaInfo.ts` | Video & Audio details and quality badges |
 | `src/themes/jellyflix/dashboard.ts` | The modern dashboard look |
 | `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |

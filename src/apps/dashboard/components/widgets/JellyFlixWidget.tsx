@@ -16,7 +16,7 @@ const JellyFlixWidget = () => {
     if (!configuration) return null;
 
     return (
-        <Widget title='JellyFlix' href='/dashboard/jellyflix'>
+        <Widget title='Lanternfish' href='/dashboard/jellyflix'>
             <Paper sx={{ p: 2 }}>
                 <Stack spacing={1}>
                     <Stack direction='row' spacing={2}>

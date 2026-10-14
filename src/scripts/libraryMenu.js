@@ -689,7 +689,8 @@ let navDrawerInstance;
 let mainDrawerButton;
 let headerHomeButton;
 let currentDrawerType;
-let documentTitle = 'Lanternfish';
+// Lanternfish: the tab is named after the app, not the server
+const documentTitle = 'Lanternfish';
 let pageTitleElement;
 let headerBackButton;
 let headerUserButton;
@@ -725,8 +726,7 @@ function setTabs (type, selectedIndex, builder) {
 const fetchServerName = (_apiClient) => {
     _apiClient
         ?.getPublicSystemInfo()
-        .then(({ ServerName }) => {
-            documentTitle = ServerName || documentTitle;
+        .then(() => {
             document.title = documentTitle;
         })
         .catch(err => {

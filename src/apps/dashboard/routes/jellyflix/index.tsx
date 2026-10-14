@@ -115,11 +115,11 @@ export const Component: FC = () => {
     if (isPending) return <Loading />;
 
     return (
-        <Page id='jellyflixSettingsPage' title='JellyFlix' className='type-interior mainAnimatedPage'>
+        <Page id='jellyflixSettingsPage' title='Lanternfish' className='type-interior mainAnimatedPage'>
             <Box className='content-primary'>
                 <Stack spacing={3} component='form' onSubmit={onSubmit}>
                     <Box>
-                        <Typography variant='h1'>JellyFlix</Typography>
+                        <Typography variant='h1'>Lanternfish</Typography>
                         <Typography sx={{ color: 'text.secondary', mt: 1 }}>{globalize.translate('JellyFlixSettingsHelp')}</Typography>
                     </Box>
 

@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography';
 import React, { type FC, useState } from 'react';
 
 import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
+import LanternfishMark from 'components/branding/LanternfishMark';
 import ArtworkDialog from 'apps/modern/features/artwork/components/ArtworkDialog';
 import { appRouter } from 'components/router/appRouter';
 import { useApi } from 'hooks/useApi';
@@ -114,7 +115,7 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] })
                     aria-hidden
                     sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, color: '#fff', fontSize: { xs: '0.8rem', md: '0.95rem' }, fontWeight: 600, letterSpacing: '0.35em' }}
                 >
-                    <Box component='span' sx={{ color: 'primary.main', fontSize: '1.9em', fontWeight: 900, letterSpacing: 0, lineHeight: 1, transform: 'scaleY(1.15)' }}>J</Box>
+                    <LanternfishMark size='1.9em' />
                     {globalize.translate(isSeries ? 'HeroKickerSeries' : 'HeroKickerFilm')}
                 </Typography>
 
