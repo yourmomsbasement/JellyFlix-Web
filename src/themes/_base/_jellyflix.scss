@@ -48,6 +48,7 @@ $muted: #b3b3b3 !default;
 // A mix of two colors, rounded to whole channels so it's written as plain hex
 @function mix($a, $b, $weight) {
     $mixed: color.mix($a, $b, $weight);
+
     @return rgb(
         math.round(color.channel($mixed, 'red', $space: rgb)),
         math.round(color.channel($mixed, 'green', $space: rgb)),
