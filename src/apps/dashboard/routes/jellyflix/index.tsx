@@ -12,6 +12,7 @@ import React, { type FC, type FormEvent, type ReactNode, useEffect, useState } f
 
 import {
     type JellyFlixConfiguration,
+    SettingsNotKeptError,
     useCheckForWebUpdates,
     useJellyFlixConfiguration,
     useSaveJellyFlixConfiguration,
@@ -183,7 +184,13 @@ export const Component: FC = () => {
                                     {globalize.translate('Save')}
                                 </Button>
                                 {save.isSuccess && <Typography sx={{ color: 'success.main' }}>{globalize.translate('SettingsSaved')}</Typography>}
-                                {save.isError && <Typography sx={{ color: 'error.main' }}>{globalize.translate('ErrorDefault')}</Typography>}
+                                {save.isError && (
+                                    <Typography sx={{ color: 'error.main' }}>
+                                        {save.error instanceof SettingsNotKeptError ?
+                                            globalize.translate('JellyFlixSettingsNotKept', save.error.settings.join(', ')) :
+                                            globalize.translate('ErrorDefault')}
+                                    </Typography>
+                                )}
                             </Paper>
                         </>
                     )}

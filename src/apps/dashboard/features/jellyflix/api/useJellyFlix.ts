@@ -54,23 +54,40 @@ const orNullWithoutPlugin = async <T>(promise: Promise<T>) => {
     }
 };
 
+const CONFIGURATION_KEY = [ ...QUERY_KEY, 'Configuration' ];
+
+const getConfiguration = (api: Api, signal?: AbortSignal) => orNullWithoutPlugin(
+    // The timestamp keeps browsers and proxies from answering with a cached copy
+    request<JellyFlixConfiguration>(api, 'GET', `/Plugins/${JELLYFLIX_PLUGIN_ID}/Configuration?_=${Date.now()}`, undefined, signal)
+);
+
+/** Settings are always read fresh from the server: never from the app's offline cache. */
+const FRESH = { staleTime: 0, meta: { persist: false } };
+
 export const useJellyFlixConfiguration = () => {
     const { api } = useApi();
     return useQuery({
-        queryKey: [ ...QUERY_KEY, 'Configuration' ],
-        queryFn: ({ signal }) => orNullWithoutPlugin(
-            request<JellyFlixConfiguration>(api!, 'GET', `/Plugins/${JELLYFLIX_PLUGIN_ID}/Configuration`, undefined, signal)
-        ),
-        enabled: !!api
+        queryKey: CONFIGURATION_KEY,
+        queryFn: ({ signal }) => getConfiguration(api!, signal),
+        enabled: !!api,
+        ...FRESH
     });
 };
+
+/** Thrown when the server accepted new settings but reads back something else. */
+export class SettingsNotKeptError extends Error {
+    constructor(public readonly settings: string[]) {
+        super(`The server did not keep: ${settings.join(', ')}`);
+    }
+}
 
 export const useWebUpdateStatus = () => {
     const { api } = useApi();
     return useQuery({
         queryKey: [ ...QUERY_KEY, 'WebUpdate' ],
-        queryFn: ({ signal }) => orNullWithoutPlugin(request<WebUpdateStatus>(api!, 'GET', '/JellyFlix/WebUpdate', undefined, signal)),
-        enabled: !!api
+        queryFn: ({ signal }) => orNullWithoutPlugin(request<WebUpdateStatus>(api!, 'GET', `/JellyFlix/WebUpdate?_=${Date.now()}`, undefined, signal)),
+        enabled: !!api,
+        ...FRESH
     });
 };
 
@@ -78,9 +95,17 @@ export const useSaveJellyFlixConfiguration = () => {
     const { api } = useApi();
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (configuration: JellyFlixConfiguration) =>
-            request<void>(api!, 'POST', `/Plugins/${JELLYFLIX_PLUGIN_ID}/Configuration`, configuration),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+        mutationFn: async (configuration: JellyFlixConfiguration) => {
+            await request<void>(api!, 'POST', `/Plugins/${JELLYFLIX_PLUGIN_ID}/Configuration`, configuration);
+
+            // Read the settings back, so a save the server didn't keep can't look like it worked
+            const saved = await getConfiguration(api!);
+            queryClient.setQueryData(CONFIGURATION_KEY, saved);
+            const notKept = (Object.keys(configuration) as (keyof JellyFlixConfiguration)[])
+                .filter(key => saved?.[key] !== configuration[key]);
+            if (notKept.length) throw new SettingsNotKeptError(notKept);
+        },
+        onSettled: () => queryClient.invalidateQueries({ queryKey: [ ...QUERY_KEY, 'WebUpdate' ] })
     });
 };
 

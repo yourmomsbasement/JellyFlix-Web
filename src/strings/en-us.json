@@ -2038,5 +2038,6 @@
     "NotYet": "Not yet",
     "JellyFlixSummaryProfiles": "Up to {0} profiles per household",
     "HeaderProfiles": "Profiles",
-    "HeaderRecommendations": "Recommendations"
+    "HeaderRecommendations": "Recommendations",
+    "JellyFlixSettingsNotKept": "The server didn't keep these settings: {0}. Make sure the JellyFlix plugin is up to date and restart Jellyfin."
 }
