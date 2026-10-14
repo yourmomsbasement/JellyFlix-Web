@@ -1,14 +1,16 @@
 <p align="center">
-<img alt="JellyFlix" src="docs/banner.png"/>
+<img alt="Lanternfish" src="docs/banner.png"/>
 </p>
 
-<h3 align="center">A Netflix-style web client for <a href="https://jellyfin.org">Jellyfin</a></h3>
+<h3 align="center">The Lanternfish web client for <a href="https://jellyfin.org">Jellyfin</a></h3>
 
 ---
 
-JellyFlix is a fork of [jellyfin-web](https://github.com/jellyfin/jellyfin-web) that makes Jellyfin look and feel like
-Netflix: profiles with "Who's watching?", a home screen of poster rows, personalized recommendations, Netflix-style
-title pages and a TV mode built for remote controls. Together with the
+This is the web client behind **Lanternfish**, a fork of [jellyfin-web](https://github.com/jellyfin/jellyfin-web) with
+profiles and "Who's watching?", a home screen of poster rows, personalized recommendations, rich title pages and a TV
+mode built for remote controls. It comes in four color themes (Midnight by default, Ember, Aurora and Classic Red),
+and the [Lanternfish TV apps](https://github.com/yourmomsbasement/LanternFish-Client) for Roku, Android TV, Fire TV,
+LG webOS and Samsung Tizen build on it. Together with the
 [JellyFlix plugin](https://github.com/yourmomsbasement/JellyFlix-Plugin) it is installed and kept up to date from the
 Jellyfin dashboard. No files to copy and no server settings to change.
 
@@ -17,7 +19,8 @@ Jellyfin dashboard. No files to copy and no server settings to change.
 <img alt="Title page" src="docs/screenshots/title.jpg" width="49%"/>
 </p>
 
-<sub>Screenshots use a test library with generated artwork; your own posters and backdrops show up here.</sub>
+<sub>Screenshots use a test library with generated artwork; your own posters and backdrops show up here. They show the
+Classic Red theme from before the rename to Lanternfish.</sub>
 
 ## Features
 
