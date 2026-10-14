@@ -19,6 +19,7 @@ import {
     type WebUpdateStatus
 } from 'apps/dashboard/features/jellyflix/api/useJellyFlix';
 import Loading from 'components/loading/LoadingComponent';
+import toast from 'components/toast/toast';
 import Page from 'components/Page';
 import globalize from 'lib/globalize';
 
@@ -89,7 +90,11 @@ export const Component: FC = () => {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if (configuration) save.mutate(configuration);
+        if (!configuration) return;
+        save.mutate(configuration, {
+            onSuccess: () => toast(globalize.translate('SettingsSaved')),
+            onError: err => console.error('[JellyFlix] failed to save settings', err)
+        });
     };
 
     if (isPending) return <Loading />;
@@ -105,8 +110,6 @@ export const Component: FC = () => {
 
                     {isError && <Alert severity='error'>{globalize.translate('SettingsPageLoadError')}</Alert>}
                     {!isError && savedConfiguration === null && <Alert severity='info'>{globalize.translate('JellyFlixPluginMissing')}</Alert>}
-                    {save.isSuccess && <Alert severity='success'>{globalize.translate('SettingsSaved')}</Alert>}
-                    {save.isError && <Alert severity='error'>{globalize.translate('ErrorDefault')}</Alert>}
 
                     {configuration && (
                         <>
@@ -162,11 +165,26 @@ export const Component: FC = () => {
                                 </Box>
                             </Section>
 
-                            <Box>
+                            {/* Stays on screen while scrolling, so the result of saving is always visible */}
+                            <Paper
+                                sx={{
+                                    position: 'sticky',
+                                    bottom: 16,
+                                    zIndex: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                    p: 1.5,
+                                    backgroundColor: 'rgba(28, 28, 28, 0.92)',
+                                    backdropFilter: 'blur(8px)'
+                                }}
+                            >
                                 <Button type='submit' variant='contained' size='large' disabled={save.isPending}>
                                     {globalize.translate('Save')}
                                 </Button>
-                            </Box>
+                                {save.isSuccess && <Typography sx={{ color: 'success.main' }}>{globalize.translate('SettingsSaved')}</Typography>}
+                                {save.isError && <Typography sx={{ color: 'error.main' }}>{globalize.translate('ErrorDefault')}</Typography>}
+                            </Paper>
                         </>
                     )}
                 </Stack>
