@@ -36,6 +36,8 @@ interface TitleHeroProps {
     /** What Play starts: the movie, or the show's current/next episode. */
     playTarget: BaseItemDto | null | undefined
     match: number | null | undefined
+    /** Quality badges such as "4K" and "Dolby Vision". */
+    badges?: string[]
 }
 
 export const getPlayLabel = (target: BaseItemDto | null | undefined) => {
@@ -52,7 +54,7 @@ export const getPlayLabel = (target: BaseItemDto | null | undefined) => {
 };
 
 /** The top of a title page: big artwork, title art, match and the actions. */
-const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match }) => {
+const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match, badges = [] }) => {
     const { api } = useApi();
     const actions = useTitleActions(item);
     const [ menuAnchor, setMenuAnchor ] = useState<HTMLElement | null>(null);
@@ -140,6 +142,15 @@ const TitleHero: FC<TitleHeroProps> = ({ item, playTarget, match }) => {
                         ) : (
                             <Typography key={part} component='span' sx={{ fontSize: 'inherit' }}>{part}</Typography>
                         )
+                    ))}
+                    {badges.map(badge => (
+                        <Box
+                            key={badge}
+                            component='span'
+                            sx={{ px: 0.6, borderRadius: 0.5, border: '1px solid rgba(255, 255, 255, 0.6)', color: '#e5e5e5', fontSize: '0.75em', fontWeight: 600, lineHeight: 1.5 }}
+                        >
+                            {badge}
+                        </Box>
                     ))}
                 </Stack>
 

@@ -2,6 +2,7 @@ import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models/base
 import { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-item-kind';
 import { PersonKind } from '@jellyfin/sdk/lib/generated-client/models/person-kind';
 import Add from '@mui/icons-material/Add';
+import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import RemoveDone from '@mui/icons-material/RemoveDone';
@@ -21,6 +22,8 @@ import { getPlayedPercentage, hasTrailer, playItem, playTrailer } from 'apps/mod
 import { useSimilar } from 'apps/modern/features/recommendations/api/useRecommendations';
 import { useEpisodes, usePlayTarget, useSeasons, useTitle, useTitleActions } from 'apps/modern/features/title/api/useTitle';
 import { getPlayLabel } from 'apps/modern/features/title/components/TitleHero';
+import { getMediaInfo, getQualityBadges } from 'apps/modern/features/title/utils/mediaInfo';
+import { appRouter } from 'components/router/appRouter';
 import { clearBackdrop } from 'components/backdrop/backdrop';
 import Page from 'components/Page';
 import { useApi } from 'hooks/useApi';
@@ -34,6 +37,11 @@ import { BACKGROUND, CONTENT_LEFT, focusRingSx, tvPillSx } from '../styles';
 
 const TICKS_PER_MINUTE = 600_000_000;
 const MAX_CAST = 3;
+
+/** Back, or Home when the page was opened directly. */
+const goBack = () => {
+    void (appRouter.canGoBack() ? appRouter.back() : appRouter.goHome());
+};
 
 /** The buttons stay put; rows further down slide up to just below the top of the screen. */
 const stageOffset = (row: HTMLElement, top: number) => (row.dataset.tvStatic === undefined ? top - window.innerWidth * 0.03 : 0);
@@ -161,11 +169,47 @@ const TvTitle: FC<{ itemId: string | undefined }> = ({ itemId }) => {
     const isFavorite = !!item?.UserData?.IsFavorite;
     const isLiked = item?.UserData?.Likes === true;
     const isPlayed = !!item?.UserData?.Played;
+    // A show has no file of its own: describe the episode Play would start
+    const { data: playTargetDetails } = useTitle(isSeries ? playTarget?.Id ?? undefined : undefined);
+    const mediaItem = isSeries ? playTargetDetails : item;
+    const media = getMediaInfo(mediaItem)[0];
+    const mediaLine = [
+        ...getQualityBadges(mediaItem),
+        media?.container,
+        media?.videoCodec,
+        media?.audio[0]
+    ].filter(Boolean).join('  ·  ');
+
     const cast = (item?.People ?? []).filter(p => p.Type === PersonKind.Actor).slice(0, MAX_CAST).map(p => p.Name);
 
     return (
         <Page id='tvTitlePage' className='mainAnimatedPage' isBackButtonEnabled>
             <Box ref={rootRef} sx={{ position: 'fixed', inset: 0, zIndex: 10, overflow: 'hidden', backgroundColor: BACKGROUND, color: '#fff' }}>
+                {/* For the Magic Remote pointer; the remote's Back key does the same */}
+                <Box
+                    component='button'
+                    type='button'
+                    aria-label={globalize.translate('ButtonBack')}
+                    onClick={goBack}
+                    sx={{
+                        position: 'absolute',
+                        top: '1.5vw',
+                        left: '1.5vw',
+                        zIndex: 2,
+                        display: 'flex',
+                        p: '0.6vw',
+                        border: 0,
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        '& svg': { fontSize: '2vw' },
+                        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                    }}
+                >
+                    <ArrowBack />
+                </Box>
+
                 {isPending && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />}
 
                 {item && (
@@ -175,6 +219,9 @@ const TvTitle: FC<{ itemId: string | undefined }> = ({ itemId }) => {
                                 <Box sx={{ mt: '0.5vw', color: '#bcbcbc', fontSize: '1.05vw' }}>
                                     {globalize.translate('Cast')}: {cast.join(', ')}
                                 </Box>
+                            )}
+                            {mediaLine && (
+                                <Box sx={{ mt: '0.5vw', color: '#bcbcbc', fontSize: '1.05vw', whiteSpace: 'pre' }}>{mediaLine}</Box>
                             )}
 
                             <Box data-tv-row data-tv-static sx={{ display: 'flex', flexWrap: 'wrap', gap: '1vw', mt: '2vw' }}>

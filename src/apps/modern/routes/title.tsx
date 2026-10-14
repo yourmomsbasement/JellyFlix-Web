@@ -16,7 +16,10 @@ import { GUTTER } from '../features/home/components/MediaRow';
 import { useSimilar } from '../features/recommendations/api/useRecommendations';
 import { usePlayTarget, useSeasons, useTitle } from '../features/title/api/useTitle';
 import EpisodeList from '../features/title/components/EpisodeList';
+import MediaInfoSection from '../features/title/components/MediaInfoSection';
 import TitleHero from '../features/title/components/TitleHero';
+import { getMediaInfo, getQualityBadges } from '../features/title/utils/mediaInfo';
+import { getEpisodeLabel } from '../features/home/utils/items';
 
 const MAX_CAST_IN_SUMMARY = 4;
 
@@ -47,6 +50,9 @@ const Title: FC = () => {
     const { data: similar } = useSimilar(itemId);
 
     const isSeries = item?.Type === BaseItemKind.Series;
+    // A show has no file of its own: describe the episode Play would start
+    const { data: playTargetDetails } = useTitle(isSeries ? playTarget?.Id ?? undefined : undefined);
+    const mediaItem = isSeries ? playTargetDetails : item;
 
     // Season: from the URL, else the one Play would continue in, else the first
     const seasonId = searchParams.get('seasonId')
@@ -88,7 +94,7 @@ const Title: FC = () => {
 
             {item && people && (
                 <>
-                    <TitleHero item={item} playTarget={playTarget} match={similar?.Match} />
+                    <TitleHero item={item} playTarget={playTarget} match={similar?.Match} badges={getQualityBadges(mediaItem)} />
 
                     <Box sx={{ px: GUTTER, pb: 8, position: 'relative', zIndex: 1 }}>
                         {/* Description and the side column */}
@@ -161,6 +167,11 @@ const Title: FC = () => {
                                 </Detail>
                             )}
                         </Box>
+
+                        <MediaInfoSection
+                            versions={getMediaInfo(mediaItem)}
+                            episodeLabel={isSeries && mediaItem ? getEpisodeLabel(mediaItem) : undefined}
+                        />
                     </Box>
                 </>
             )}

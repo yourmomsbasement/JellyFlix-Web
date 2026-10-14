@@ -2007,5 +2007,8 @@
     "MarkedShowAsWatched": "Marked the whole show as watched",
     "RemoveFromContinueWatching": "Remove from Continue Watching",
     "RemovedFromContinueWatching": "Removed from Continue Watching",
-    "MarkAsUnwatched": "Mark as unwatched"
+    "MarkAsUnwatched": "Mark as unwatched",
+    "VideoAndAudio": "Video & Audio",
+    "VideoAndAudioFor": "Video & Audio: {0}",
+    "DynamicRange": "Dynamic range"
 }

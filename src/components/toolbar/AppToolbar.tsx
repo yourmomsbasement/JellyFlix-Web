@@ -23,7 +23,9 @@ interface AppToolbarProps {
 }
 
 const onBackButtonClick = () => {
-    appRouter.back()
+    // A page opened directly (bookmark, refresh in a new tab) has nothing to go back to; go Home instead
+    const navigation = appRouter.canGoBack() ? appRouter.back() : appRouter.goHome();
+    Promise.resolve(navigation)
         .catch(err => {
             console.error('[AppToolbar] error calling appRouter.back', err);
         });
