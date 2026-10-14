@@ -13,6 +13,8 @@ export interface Profile {
     Id: string
     Name: string
     AvatarColor: string
+    /** The generated avatar, e.g. "cat"; missing before plugin 1.2.1. */
+    AvatarIcon?: string | null
     PrimaryImageTag?: string | null
     HasPin: boolean
     IsKids: boolean
@@ -30,6 +32,8 @@ export interface Household {
 export interface ProfileInput {
     Name?: string
     AvatarColor?: string
+    /** An empty string goes back to the smiley. */
+    AvatarIcon?: string
     IsKids?: boolean
     Pin?: string
     RemovePin?: boolean
@@ -38,7 +42,7 @@ export interface ProfileInput {
 /** Error codes the plugin returns in `{ Error, Message }` bodies. */
 export type ProfileErrorCode = 'BadRequest' | 'Forbidden' | 'NotFound' | 'ProfileLimitReached' | 'InvalidPin' | 'PinLocked';
 
-export const AVATAR_COLORS = [ '#E50914', '#0071EB', '#F5C518', '#2BB673', '#8E44AD', '#FF7A00' ];
+export const AVATAR_COLORS = [ '#E50914', '#0071EB', '#F5C518', '#2BB673', '#8E44AD', '#FF7A00', '#E91E63', '#00A8A8', '#546E7A', '#6D4C41' ];
 
 const HOUSEHOLD_QUERY_KEY = [ 'JellyFlix', 'Household' ];
 
@@ -94,6 +98,16 @@ export const useCreateProfile = () => useHouseholdMutation(
 
 export const useUpdateProfile = () => useHouseholdMutation(
     (api, { id, input }: { id: string, input: ProfileInput }) => request<Profile>(api, 'POST', `/${id}`, input));
+
+/** Sets a profile's photo: a JPEG, PNG or WebP image. */
+export const useSetProfileImage = () => useHouseholdMutation(
+    (api, { id, image }: { id: string, image: Blob }) => api.axiosInstance.post(`${api.basePath}/JellyFlix/Profiles/${id}/Image`, image, {
+        headers: { Authorization: api.authorizationHeader, 'Content-Type': image.type || 'image/jpeg' }
+    }));
+
+/** Removes a profile's photo, so its generated avatar shows again. */
+export const useRemoveProfileImage = () => useHouseholdMutation(
+    (api, id: string) => request<void>(api, 'DELETE', `/${id}/Image`));
 
 export const useDeleteProfile = () => useHouseholdMutation(
     (api, id: string) => request<void>(api, 'DELETE', `/${id}`));

@@ -28,6 +28,13 @@ parental controls. Optional 4-digit PINs, kids profiles, and "Who's watching?" e
 
 <p align="center"><img alt="Who's watching?" src="docs/screenshots/profiles.jpg" width="70%"/></p>
 
+Each profile picks an avatar in **Manage Profiles**: one of 18 generated icons (cat, panda, robot, astronaut, ninja…)
+on one of 10 colors, **Surprise me** for a random pair, or **Upload photo** for a picture of their own. Photos are
+cropped to a square and shrunk in the browser before they're uploaded. The household owner can set any profile's
+avatar; other profiles can change their own.
+
+<p align="center"><img alt="Choosing an avatar" src="docs/screenshots/profile-editor.jpg" width="70%"/></p>
+
 ### Home
 
 A full-bleed hero picked from your Top Picks, then rows of 2:3 posters: Continue Watching (with *Mark as watched* and
@@ -134,7 +141,8 @@ That's all. The plugin downloads the newest JellyFlix web client built for your 
 the stock one, and keeps it up to date. Settings are under **JellyFlix → Settings** in the dashboard. See the
 [plugin's README](https://github.com/yourmomsbasement/JellyFlix-Plugin) for details.
 
-Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer; without it the
+Search by description, artwork per profile and the end-credit companion need plugin 1.2.0 or newer, and avatar
+icons and photos need 1.2.1; without it the
 client simply leaves them out. Some settings need a recent plugin too; the settings page says so when the installed
 plugin is too old. Update JellyFlix in
 **Dashboard → Plugins** and restart Jellyfin.

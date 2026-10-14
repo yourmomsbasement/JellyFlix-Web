@@ -2112,5 +2112,12 @@
     "UpNextInSeries": "Up next",
     "Soundtrack": "Soundtrack",
     "MusicBy": "Music by {0}",
-    "SoundtrackMusicBy": "Soundtrack · music by {0}"
+    "SoundtrackMusicBy": "Soundtrack · music by {0}",
+    "ProfileIcon": "Icon",
+    "UploadProfilePhoto": "Upload photo",
+    "ChangeProfilePhoto": "Change photo",
+    "RemoveProfilePhoto": "Remove photo",
+    "SurpriseMe": "Surprise me",
+    "ProfilePhotoUnreadable": "That image couldn't be read. Try a JPEG or PNG photo.",
+    "ProfilePhotoUnsupported": "Profile photos need JellyFlix plugin 1.2.1 or newer. Update it in Dashboard → Plugins."
 }

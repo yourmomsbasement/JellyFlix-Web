@@ -5,18 +5,21 @@ import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 
 import { getProfileImageUrl, type Profile } from '../api/profiles';
+import { getAvatarIcon } from './avatarIcons';
 
 interface ProfileAvatarProps {
-    profile: Pick<Profile, 'Id' | 'Name' | 'AvatarColor' | 'PrimaryImageTag' | 'IsKids'>
+    profile: Pick<Profile, 'Id' | 'Name' | 'AvatarColor' | 'AvatarIcon' | 'PrimaryImageTag' | 'IsKids'>
     size?: string | number
     /** Hide the KIDS ribbon, e.g. on small avatars where it wouldn't fit. */
     hideKidsBadge?: boolean
+    /** A photo to show instead of the saved one, e.g. one picked but not uploaded yet; null shows none. */
+    imageUrl?: string | null
 }
 
-/** A square profile avatar: the user's image if it has one, otherwise a smiley on the profile color. */
-const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%', hideKidsBadge = false }) => {
+/** A square profile avatar: the profile's photo if it has one, otherwise its generated icon on the profile color. */
+const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%', hideKidsBadge = false, imageUrl: imageOverride }) => {
     const { api } = useApi();
-    const imageUrl = getProfileImageUrl(api, profile as Profile);
+    const imageUrl = imageOverride === undefined ? getProfileImageUrl(api, profile as Profile) : imageOverride;
 
     return (
         <Box
@@ -40,9 +43,7 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({ profile, size = '100%', hideKid
                     aria-hidden
                     sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
                 >
-                    <rect x='28' y='30' width='9' height='16' rx='2' fill='#fff' />
-                    <rect x='63' y='30' width='9' height='16' rx='2' fill='#fff' />
-                    <path d='M24 60 Q50 84 76 60' stroke='#fff' strokeWidth='7' fill='none' strokeLinecap='round' />
+                    {getAvatarIcon(profile.AvatarIcon).art}
                 </Box>
             )}
             {profile.IsKids && !hideKidsBadge && (
