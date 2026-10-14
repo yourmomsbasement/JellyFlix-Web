@@ -27,7 +27,7 @@ const JellyFlixDrawerSection = () => {
                 <ListItemIcon>
                     <JellyFlixIcon />
                 </ListItemIcon>
-                <ListItemText primary={globalize.translate('HeaderProfiles') + ' & ' + globalize.translate('HeaderWebClient').toLowerCase()} />
+                <ListItemText primary={globalize.translate('Settings')} />
             </ListItemLink>
         </List>
     );

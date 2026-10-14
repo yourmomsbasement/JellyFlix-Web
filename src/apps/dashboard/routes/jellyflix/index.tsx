@@ -16,9 +16,11 @@ import {
     useCheckForWebUpdates,
     useJellyFlixConfiguration,
     useSaveJellyFlixConfiguration,
+    useTestSeerr,
     useWebUpdateStatus,
     type WebUpdateStatus
 } from 'apps/dashboard/features/jellyflix/api/useJellyFlix';
+import { getRequestError } from 'apps/legacy/features/search/api/useRequests';
 import Loading from 'components/loading/LoadingComponent';
 import toast from 'components/toast/toast';
 import Page from 'components/Page';
@@ -78,6 +80,7 @@ export const Component: FC = () => {
     const { data: status } = useWebUpdateStatus();
     const save = useSaveJellyFlixConfiguration();
     const checkForUpdates = useCheckForWebUpdates();
+    const testSeerr = useTestSeerr();
     const [ configuration, setConfiguration ] = useState<JellyFlixConfiguration>();
 
     useEffect(() => {
@@ -139,6 +142,56 @@ export const Component: FC = () => {
                             </Section>
 
                             <Section title={globalize.translate('HeaderRecommendations')} description={globalize.translate('JellyFlixRecommendationsHelp')} />
+
+                            <Section title={globalize.translate('HeaderRequests')} description={globalize.translate('JellyFlixRequestsHelp')}>
+                                {configuration.RequestsEnabled === undefined ? (
+                                    <Alert severity='warning'>{globalize.translate('JellyFlixRequestsOutdated')}</Alert>
+                                ) : (
+                                    <>
+                                        <Check
+                                            label={globalize.translate('LabelRequestsEnabled')}
+                                            checked={configuration.RequestsEnabled}
+                                            onChange={checked => update({ RequestsEnabled: checked })}
+                                        />
+                                        <TextField
+                                            type='url'
+                                            label={globalize.translate('LabelSeerrUrl')}
+                                            helperText={globalize.translate('SeerrUrlHelp')}
+                                            value={configuration.SeerrUrl ?? ''}
+                                            onChange={e => update({ SeerrUrl: e.target.value.trim() })}
+                                        />
+                                        <TextField
+                                            type='password'
+                                            autoComplete='off'
+                                            label={globalize.translate('LabelSeerrApiKey')}
+                                            helperText={globalize.translate('SeerrApiKeyHelp')}
+                                            value={configuration.SeerrApiKey ?? ''}
+                                            onChange={e => update({ SeerrApiKey: e.target.value.trim() })}
+                                        />
+                                        <Check
+                                            label={globalize.translate('LabelAllowKidsRequests')}
+                                            checked={!!configuration.AllowKidsRequests}
+                                            onChange={checked => update({ AllowKidsRequests: checked })}
+                                        />
+                                        <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+                                            <Button
+                                                variant='outlined'
+                                                disabled={save.isPending || testSeerr.isPending || !configuration.SeerrUrl || !configuration.SeerrApiKey}
+                                                // The test uses the saved settings, so save first
+                                                onClick={() => save.mutate(configuration, { onSuccess: () => testSeerr.mutate() })}
+                                            >
+                                                {globalize.translate('ButtonTestSeerr')}
+                                            </Button>
+                                            {testSeerr.isSuccess && (
+                                                <Typography sx={{ color: 'success.main' }}>{globalize.translate('SeerrConnected', testSeerr.data)}</Typography>
+                                            )}
+                                            {testSeerr.isError && (
+                                                <Typography sx={{ color: 'error.main' }}>{getRequestError(testSeerr.error)}</Typography>
+                                            )}
+                                        </Stack>
+                                    </>
+                                )}
+                            </Section>
 
                             <Section title={globalize.translate('HeaderWebClient')} description={status ? getWebClientSummary(status) : ''}>
                                 {status && <StatusTable status={status} />}

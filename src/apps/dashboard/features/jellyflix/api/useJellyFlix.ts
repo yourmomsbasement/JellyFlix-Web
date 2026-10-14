@@ -17,6 +17,11 @@ export interface JellyFlixConfiguration {
     ServeWebClient?: boolean
     WebReleasesRepository: string
     GitHubApiUrl: string
+    /** The request settings are missing before plugin 1.1.0. */
+    RequestsEnabled?: boolean
+    SeerrUrl?: string
+    SeerrApiKey?: string
+    AllowKidsRequests?: boolean
 }
 
 /** What the plugin's web updater reports. */
@@ -107,6 +112,14 @@ export const useSaveJellyFlixConfiguration = () => {
             if (notKept.length) throw new SettingsNotKeptError(notKept);
         },
         onSettled: () => queryClient.invalidateQueries({ queryKey: [ ...QUERY_KEY, 'WebUpdate' ] })
+    });
+};
+
+/** Checks the Seerr connection with the saved settings; resolves to Seerr's version. */
+export const useTestSeerr = () => {
+    const { api } = useApi();
+    return useMutation({
+        mutationFn: async () => (await request<{ Version: string }>(api!, 'POST', '/JellyFlix/Requests/Test')).Version
     });
 };
 

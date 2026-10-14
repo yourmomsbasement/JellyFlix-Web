@@ -55,6 +55,12 @@ focused title, and LG's Magic Remote pointer works.
 </p>
 <p align="center"><img alt="TV title page" src="docs/screenshots/tv-title.jpg" width="70%"/></p>
 
+### Requests
+
+With [Seerr](https://github.com/seerr-team/seerr) (Jellyseerr / Overseerr) set up in the JellyFlix settings, search
+also shows matching movies and shows that aren't in the library, each with a **Request** button. Requests go through
+the household owner's Seerr account, and the cards show what's already requested or on its way.
+
 ### Dashboard
 
 The admin dashboard uses the JellyFlix look, with a JellyFlix section for profiles, recommendations and web client
@@ -125,6 +131,7 @@ Where the code lives:
 | `src/apps/modern/features/title`, `routes/title.tsx` | Title pages |
 | `src/apps/tv` | TV mode: remote navigation, TV home and title pages |
 | `src/apps/dashboard/features/jellyflix` | JellyFlix dashboard settings |
+| `src/apps/legacy/features/search/components/RequestResults.tsx` | Request cards under search results |
 | `src/themes/jellyflix` | The JellyFlix theme |
 
 JellyFlix builds on the work of the [Jellyfin project](https://jellyfin.org). Review Jellyfin's

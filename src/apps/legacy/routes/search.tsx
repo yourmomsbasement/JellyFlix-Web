@@ -3,6 +3,7 @@ import React, { type FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDebounceValue } from 'usehooks-ts';
 
+import RequestResults from 'apps/legacy/features/search/components/RequestResults';
 import SearchFields from 'apps/legacy/features/search/components/SearchFields';
 import SearchResults from 'apps/legacy/features/search/components/SearchResults';
 import SearchSuggestions from 'apps/legacy/features/search/components/SearchSuggestions';
@@ -33,11 +34,15 @@ const Search: FC = () => {
                     parentId={parentIdQuery}
                 />
             ) : (
-                <SearchResults
-                    parentId={parentIdQuery}
-                    collectionType={collectionTypeQuery}
-                    query={debouncedQuery}
-                />
+                <>
+                    <SearchResults
+                        parentId={parentIdQuery}
+                        collectionType={collectionTypeQuery}
+                        query={debouncedQuery}
+                    />
+                    {/* JellyFlix: titles that aren't in the library can be requested (global search only) */}
+                    {!parentIdQuery && <RequestResults query={debouncedQuery} />}
+                </>
             )}
         </Page>
     );
