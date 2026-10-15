@@ -298,7 +298,8 @@ export class UserSettings {
             return this.set('blurhash', val.toString(), false);
         }
 
-        return toBoolean(this.get('blurhash', false), true);
+        // Off by default on TVs: decoding the blurred placeholders while scrolling weighs on their slow processors
+        return toBoolean(this.get('blurhash', false), !browser.tv);
     }
 
     /**
