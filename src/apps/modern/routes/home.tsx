@@ -16,9 +16,11 @@ import { clearBackdrop } from 'components/backdrop/backdrop';
 import Page from 'components/Page';
 import { useUserViews } from 'hooks/api/useUserViews';
 import { useApi } from 'hooks/useApi';
+import { useNearViewport } from 'hooks/useNearViewport';
 import globalize from 'lib/globalize';
 
 import {
+    HOME_ROW_LIMIT,
     ROW_COLLECTION_TYPES,
     useContinueWatching,
     useGenreTitles,
@@ -39,14 +41,26 @@ import { useRecommendations } from '../features/recommendations/api/useRecommend
 /** Space for the app bar on pages without a hero underneath it. */
 const APP_BAR_OFFSET = '72px';
 
+// Genre and library rows sit far down the page; they load their titles once the viewer scrolls near them
+
 const LatestRow: FC<{ library: BaseItemDto }> = ({ library }) => {
-    const { data, isPending } = useLatestInLibrary(library);
-    return <MediaRow title={globalize.translate('LatestFromLibrary', library.Name ?? '')} items={data} isPending={isPending} />;
+    const [ rowRef, isNear ] = useNearViewport();
+    const { data, isPending } = useLatestInLibrary(library, isNear);
+    return (
+        <div ref={rowRef}>
+            <MediaRow title={globalize.translate('LatestFromLibrary', library.Name ?? '')} items={data} isPending={!isNear || isPending} />
+        </div>
+    );
 };
 
 const GenreRow: FC<{ genre: BaseItemDto }> = ({ genre }) => {
-    const { data, isPending } = useGenreTitles(genre);
-    return <MediaRow title={genre.Name ?? ''} items={data} isPending={isPending} />;
+    const [ rowRef, isNear ] = useNearViewport();
+    const { data, isPending } = useGenreTitles(genre, isNear);
+    return (
+        <div ref={rowRef}>
+            <MediaRow title={genre.Name ?? ''} items={data} isPending={!isNear || isPending} />
+        </div>
+    );
 };
 
 const Browse: FC = () => {
@@ -58,7 +72,7 @@ const Browse: FC = () => {
     const recommendations = useRecommendations();
     const resume = useContinueWatching();
     const nextUp = useNextUp();
-    const myList = useMyList();
+    const myList = useMyList(HOME_ROW_LIMIT);
     const newlyAdded = useNewlyAdded();
     const topRated = useTopRated();
     const watchAgain = useWatchAgain();

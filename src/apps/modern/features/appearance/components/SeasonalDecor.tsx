@@ -8,7 +8,8 @@ const flicker = keyframes`0%, 100% { opacity: 1; } 40% { opacity: 0.75; } 55% { 
 const batDrift = keyframes`from { transform: translate(0, 0); } to { transform: translate(-2.5vw, 1.5vw); }`;
 const flap = keyframes`from { transform: scaleY(1); } to { transform: scaleY(0.45); }`;
 const snowfall = keyframes`0% { transform: translate(0, 0); } 50% { transform: translate(2vw, 45vh); } 100% { transform: translate(-1vw, 90vh); }`;
-const twinkle = keyframes`from { opacity: 1; } to { opacity: 0.45; box-shadow: none; }`;
+// Opacity only: animating the glow (box-shadow) would repaint every bulb on every frame, which TVs feel
+const twinkle = keyframes`from { opacity: 1; } to { opacity: 0.45; }`;
 const spin = keyframes`to { transform: rotate(360deg); }`;
 const drift = keyframes`from { transform: translateY(0); } to { transform: translateY(-3vw); }`;
 
@@ -74,6 +75,8 @@ const Halloween: FC = () => (
                         fill: '#0b0b0b',
                         filter: 'drop-shadow(0 0 6px rgba(255, 117, 24, 0.55))',
                         transformOrigin: '50% 40%',
+                        // Its own layer: the glow is drawn once and the flapping runs on the GPU
+                        willChange: 'transform',
                         animation: `${flap} 0.32s ${bat.delay}s ease-in-out infinite alternate`
                     }}
                 >

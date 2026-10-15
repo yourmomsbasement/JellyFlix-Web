@@ -35,8 +35,7 @@ const FIELDS = [
     ItemFields.Overview,
     ItemFields.Genres,
     ItemFields.PrimaryImageAspectRatio,
-    ItemFields.ChildCount,
-    ItemFields.RemoteTrailers
+    ItemFields.ChildCount
 ];
 
 const IMAGE_TYPES = [ ImageType.Primary, ImageType.Backdrop, ImageType.Logo ];
@@ -50,13 +49,15 @@ const SHUFFLED = { staleTime: Infinity, meta: { persist: false } };
 const useHomeQuery = <T>(
     key: string[],
     queryFn: (api: Api, userId: string, signal: AbortSignal) => Promise<T>,
-    options?: typeof SHUFFLED
+    options?: typeof SHUFFLED,
+    /** False to hold off, e.g. until the row is near the screen. */
+    enabled = true
 ) => {
     const { api, user } = useApi();
     return useQuery({
         queryKey: [ 'JellyFlix', 'Home', ...key, user?.Id ],
         queryFn: ({ signal }) => queryFn(api!, user!.Id!, signal),
-        enabled: !!api && !!user?.Id,
+        enabled: enabled && !!api && !!user?.Id,
         ...options
     });
 };
@@ -70,8 +71,8 @@ export const useHeroItems = () => useHomeQuery([ 'Hero' ], async (api, userId, s
         imageTypes: [ ImageType.Backdrop ],
         sortBy: [ ItemSortBy.Random ],
         limit: 5,
-        // Trailer info decides whether the hero offers "Watch Trailer"
-        fields: [ ...FIELDS, ItemFields.LocalTrailerCount ],
+        // Trailer info decides whether the hero offers "Watch Trailer"; rows don't need it
+        fields: [ ...FIELDS, ItemFields.LocalTrailerCount, ItemFields.RemoteTrailers ],
         enableImageTypes: IMAGE_TYPES,
         imageTypeLimit: 1
     }, { signal });
@@ -103,7 +104,7 @@ export const useNextUp = () => useHomeQuery([ 'NextUp' ], async (api, userId, si
     return data.Items ?? [];
 });
 
-export const useLatestInLibrary = (library: BaseItemDto) => useHomeQuery([ 'Latest', library.Id ?? '' ], async (api, userId, signal) => {
+export const useLatestInLibrary = (library: BaseItemDto, enabled = true) => useHomeQuery([ 'Latest', library.Id ?? '' ], async (api, userId, signal) => {
     const { data } = await getLibraryApi(api).getLatestMedia({
         userId,
         parentId: library.Id,
@@ -113,16 +114,17 @@ export const useLatestInLibrary = (library: BaseItemDto) => useHomeQuery([ 'Late
         imageTypeLimit: 1
     }, { signal });
     return data;
-});
+}, undefined, enabled);
 
-/** Favorites, presented as Netflix's "My List". */
-export const useMyList = () => useHomeQuery([ 'MyList' ], async (api, userId, signal) => {
+/** Favorites, presented as Netflix's "My List": a row's worth for home, or all of them for the My List page. */
+export const useMyList = (limit?: number) => useHomeQuery([ 'MyList', String(limit ?? 'All') ], async (api, userId, signal) => {
     const { data } = await getLibraryApi(api).getItems({
         userId,
         isFavorite: true,
         recursive: true,
         includeItemTypes: [ BaseItemKind.Movie, BaseItemKind.Series, BaseItemKind.Video, BaseItemKind.MusicVideo, BaseItemKind.BoxSet ],
         sortBy: [ ItemSortBy.SortName ],
+        limit,
         fields: FIELDS,
         enableImageTypes: IMAGE_TYPES,
         imageTypeLimit: 1
@@ -169,5 +171,8 @@ export const useTopGenres = () => useHomeQuery([ 'Genres' ], async (api, userId,
         .slice(0, MAX_GENRE_ROWS);
 });
 
-export const useGenreTitles = (genre: BaseItemDto) => useHomeQuery([ 'Genre', genre.Id ?? '' ], (api, userId, signal) =>
-    getTitles(api, userId, signal, { genreIds: genre.Id ? [ genre.Id ] : undefined, sortBy: [ ItemSortBy.Random ] }), SHUFFLED);
+export const useGenreTitles = (genre: BaseItemDto, enabled = true) => useHomeQuery([ 'Genre', genre.Id ?? '' ], (api, userId, signal) =>
+    getTitles(api, userId, signal, { genreIds: genre.Id ? [ genre.Id ] : undefined, sortBy: [ ItemSortBy.Random ] }), SHUFFLED, enabled);
+
+/** How many titles a home row shows. */
+export const HOME_ROW_LIMIT = ROW_LIMIT;
