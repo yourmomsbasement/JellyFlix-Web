@@ -1,6 +1,6 @@
 import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models/base-item-dto';
 import Box from '@mui/material/Box';
-import React, { type FC, type KeyboardEvent } from 'react';
+import React, { type FC, type KeyboardEvent, memo } from 'react';
 
 import { useArtworkOverrides } from 'apps/modern/features/artwork/api/useArtwork';
 import { getPosterUrl } from 'apps/modern/features/home/utils/images';
@@ -15,6 +15,11 @@ interface TvPosterTileProps {
     onFocusItem?: (item: BaseItemDto) => void
     /** What OK does; opens the title by default. */
     onSelect?: (item: BaseItemDto) => void
+    /**
+     * False until the tile's row is near the screen. Older TV browsers ignore loading="lazy" and would otherwise
+     * download every poster on the page at once.
+     */
+    showImage?: boolean
 }
 
 /** The remote's play keys start a tile straight away, as on Netflix. */
@@ -27,8 +32,8 @@ export const onPlayKey = (item: BaseItemDto) => (e: KeyboardEvent) => {
     }
 };
 
-/** A 2:3 poster in a TV row. */
-const TvPosterTile: FC<TvPosterTileProps> = ({ item, onFocusItem, onSelect = openItem }) => {
+/** A 2:3 poster in a TV row. Memoized: rows re-render as data arrives, and their posters needn't. */
+const TvPosterTileContent: FC<TvPosterTileProps> = ({ item, onFocusItem, onSelect = openItem, showImage = true }) => {
     const { api } = useApi();
     useArtworkOverrides();
     const posterUrl = getPosterUrl(api, item, 360);
@@ -59,9 +64,10 @@ const TvPosterTile: FC<TvPosterTileProps> = ({ item, onFocusItem, onSelect = ope
                 cursor: 'pointer'
             }}
         >
-            {posterUrl ? (
+            {posterUrl && showImage && (
                 <Box component='img' src={posterUrl} alt='' loading='lazy' sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            ) : (
+            )}
+            {!posterUrl && (
                 <Box sx={{ p: '0.8vw', color: '#fff', fontSize: '1.1vw', fontWeight: 600, textAlign: 'left' }}>{title}</Box>
             )}
 
@@ -91,5 +97,7 @@ const TvPosterTile: FC<TvPosterTileProps> = ({ item, onFocusItem, onSelect = ope
         </Box>
     );
 };
+
+const TvPosterTile = memo(TvPosterTileContent);
 
 export default TvPosterTile;
