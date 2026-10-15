@@ -171,7 +171,8 @@ update failed. The dashboard home also gets a Lanternfish plugin card.
 
 ## Install
 
-Lanternfish needs **Jellyfin 13** (the `unstable` builds) and the Lanternfish plugin.
+Lanternfish needs **Jellyfin 12.2** or **Jellyfin 13** (the `unstable` builds) and the Lanternfish plugin (1.4.4 or newer
+on 12.2).
 
 1. In Jellyfin, open **Dashboard → Plugins → Repositories** and add
    `https://raw.githubusercontent.com/yourmomsbasement/JellyFlix-Plugin/main/manifest.json`.

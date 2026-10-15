@@ -47,6 +47,9 @@ jobs:
           version="$(date -u +%Y.%m.%d).${GITHUB_RUN_NUMBER}"
           # The Jellyfin server major.minor this client is built for, e.g. "13.0"
           server_version="$(node -p "require('./package.json').version.split('.').slice(0, 2).join('.')")"
+          # Older Jellyfin versions the client is also tested with. Lanternfish plugins from 1.4.4 install the client
+          # on any of these; older plugins only read serverVersion.
+          also_supports='"12.2"'
 
           (cd dist && zip -qr ../jellyflix-web.zip .)
           sha256sum jellyflix-web.zip | cut -d' ' -f1 > jellyflix-web.zip.sha256
@@ -54,7 +57,8 @@ jobs:
           {
             "version": "${version}",
             "commit": "${GITHUB_SHA}",
-            "serverVersion": "${server_version}"
+            "serverVersion": "${server_version}",
+            "serverVersions": ["${server_version}", ${also_supports}]
           }
           EOF
 
@@ -71,4 +75,4 @@ jobs:
             jellyflix-web.zip jellyflix-web.zip.sha256 release.json \
             --target "${GITHUB_SHA}" \
             --title "Lanternfish web ${VERSION}" \
-            --notes "Lanternfish web client for Jellyfin ${SERVER_VERSION}, built from ${GITHUB_SHA}. Installed automatically by the JellyFlix plugin's Web Updater."
+            --notes "Lanternfish web client for Jellyfin ${SERVER_VERSION} (also tested with 12.2), built from ${GITHUB_SHA}. Installed automatically by the JellyFlix plugin's Web Updater."
